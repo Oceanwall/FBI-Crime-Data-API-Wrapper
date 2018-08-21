@@ -3,14 +3,82 @@ const FBI_Wrapper = require("../src/FBI_Wrapper");
 
 let wrapper = new FBI_Wrapper(process.env.API_KEY);
 
-wrapper.getAgencies().then((results) => {
-  console.log(results);
-});
+// Getting information about agencies
 
-wrapper.getAgencyByORI("MN0480400").then((results) => {
-  console.log(results);
-});
+// wrapper.getAgencies().then((results) => {
+//   console.log(results);
+// });
+//
+// wrapper.getAgencyByORI("MN0480400").then((results) => {
+//   console.log(results);
+// });
+//
+// wrapper.getAgenciesByState("DC").then((results) => {
+//   console.log(results);
+// });
+//NOTE: Maybe rely on longitude / latitude to determine nearby-ness
+//NOTE: USES ORI9 ids
 
-wrapper.getAgenciesByState("DC").then((results) => {
-  console.log(results);
-});
+//Gettng information about states
+
+// wrapper.getStates(1).then((results) => {
+//   console.log(results);
+// });
+//
+// wrapper.getStateByAbbreviation("WA").then((results) => {
+//   console.log(results);
+// });
+
+//Getting information about police employment statistics
+
+// wrapper.getPoliceByORI("MN0480400").then((results) => {
+//   console.log(results);
+// });
+// wrapper.getPoliceByNation().then((results) => {
+//   console.log(results);
+// });
+// wrapper.getPoliceByRegion(1).then((results) => {
+//   console.log(results);
+// });
+// wrapper.getPoliceByRegion("Midwest").then((results) => {
+//   console.log(results);
+// });
+// wrapper.getPoliceByState("TX").then((results) => {
+//   console.log(results);
+// });
+
+//Getting information about offenses via ORI
+//Types of offenses:  "violent_crime" ,
+    // "homicide"
+    // "rape-legacy"
+    // "rape-revised"
+    // "robbery"
+    // "aggravated-assault"
+    // "property-crime"
+    // "burglary"
+    // "larceny"
+    // "motor-vehicle-theft"
+    // "arson"
+// wrapper.getCrimesByORI("MN0480400").then((results) => {
+//   console.log(results);
+// });
+// wrapper.getCrimesByORI("MN0480400", "burglary").then((results) => {
+//   console.log(results);
+// });
+
+
+//Victim demographic data
+//Same type of offenses as previous, but also allows for variables: (age, count, ethnicity, race, sex, relationship)
+//Note: Data is not guranteed for every ORI; possible for an empty data array
+// wrapper.getVictimsByORI("MI2802800", "burglary", "age").then((results) => {
+//   console.log(results);
+// });
+// wrapper.getVictimsByNation("burglary", "age").then((results) => {
+//   console.log(results);
+// });
+// wrapper.getVictimsByRegion("West", "burglary", "age").then((results) => {
+//   console.log(results);
+// });
+// wrapper.getVictimsByState("TX", "burglary", "age").then((results) => {
+//   console.log(results);
+// });
