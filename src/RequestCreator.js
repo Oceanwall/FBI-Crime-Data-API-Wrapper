@@ -47,11 +47,20 @@ class RequestCreator {
     return RequestCreator.GETrequest(`${BASE_URL}summarized/agencies/${ori}/${offense}?${this.userAPIkey}`);
   }
 
-  getVictims(scope, offense, classification, relevantInfo) {
+  getParticipants(type, scope, offense, classification, relevantInfo) {
     if (scope == "national") {
-      return RequestCreator.GETrequest(`${BASE_URL}nibrs/${offense}/victim/${scope}/${classification}?${this.userAPIkey}`);
+      return RequestCreator.GETrequest(`${BASE_URL}nibrs/${offense}/${type}/${scope}/${classification}?${this.userAPIkey}`);
     }
-    else return RequestCreator.GETrequest(`${BASE_URL}nibrs/${offense}/victim/${scope}/${relevantInfo}/${classification}?${this.userAPIkey}`);
+    else return RequestCreator.GETrequest(`${BASE_URL}nibrs/${offense}/${type}/${scope}/${relevantInfo}/${classification}?${this.userAPIkey}`);
+  }
+
+  getCrimeCount(scope, offense, relevantInfo = "") {
+    return this.getParticipants("offense", scope, offense, "count", relevantInfo);
+  }
+
+  // Detailed stats offered only for arson...
+  getArsonStats(scope, relevantInfo = "") {
+    return RequestCreator.GETrequest(`${BASE_URL}arson/${scope}/${relevantInfo}?${this.userAPIkey}`);
   }
 
   static GETrequest(targetURL) {

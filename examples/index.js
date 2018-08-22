@@ -82,3 +82,45 @@ let wrapper = new FBI_Wrapper(process.env.API_KEY);
 // wrapper.getVictimsByState("TX", "burglary", "age").then((results) => {
 //   console.log(results);
 // });
+
+//Offender demographic data
+// wrapper.getOffendersByORI("MI2802800", "arson", "race").then((results) => {
+//   console.log(results);
+// });
+// wrapper.getOffendersByNation("arson", "race").then((results) => {
+//   console.log(results);
+// });
+// wrapper.getOffendersByRegion("West", "arson", "race").then((results) => {
+//   console.log(results);
+// });
+// wrapper.getOffendersByState("TX", "arson", "race").then((results) => {
+//   console.log(results);
+// });
+
+//UCR counts of crimes
+// wrapper.getCrimeCountByNation("aggravated-assault").then((results) => {
+//   console.log(results);
+// });
+// wrapper.getCrimeCountByRegion("West", "aggravated-assault").then((results) => {
+//   console.log(results);
+// });
+// wrapper.getCrimeCountByState("TX", "aggravated-assault").then((results) => {
+//   console.log(results);
+// });
+// wrapper.getCrimeCountByORI("MI2802800", "aggravated-assault").then((results) => {
+//   console.log(results);
+// });
+
+//Detailed arson stats
+// wrapper.getDetailedArsonStatsByNation().then((results) => {
+//   console.log(results);
+// });
+//Separates details into states
+// wrapper.getDetailedArsonStatsByRegion("West").then((results) => {
+//   console.log(results);
+// });
+// wrapper.getDetailedArsonStatsByState("TX").then((results) => {
+//   console.log(results);
+// });
+
+//TODO: Participation, Estimates
