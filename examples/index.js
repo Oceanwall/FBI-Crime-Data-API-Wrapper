@@ -52,9 +52,9 @@ let wrapper = new FBI_Wrapper(process.env.API_KEY);
 // wrapper.getPoliceByRegion("Midwest").then((results) => {
 //   console.log(results);
 // });
-// wrapper.getPoliceByState("TX").then((results) => {
-//   console.log(results);
-// });
+wrapper.getPoliceByState("TX").then((results) => {
+  console.log(results);
+});
 
 //Getting information about offenses via ORI
 //Types of offenses:  "violent_crime" ,

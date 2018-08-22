@@ -1,16 +1,19 @@
 const fetch = require('node-fetch');
 
-const ErrorChecker = require("./ErrorChecker");
-const check = new ErrorChecker();
-
 const BASE_URL = "https://api.usa.gov/crime/fbi/sapi/api/";
 
 
 class RequestCreator {
 
-  constructor(userAPIkey) {
-    check.exists(userAPIkey, "API Key");
+  constructor(userAPIkey, strictErrorChecking) {
+    if (strictErrorChecking) {
+      if (typeof userAPIkey == "undefined" || typeof userAPIkey == "null") {
+        throw new Error(`${userAPIkey} does not exist.`);
+      }
+    }
+
     this.userAPIkey = `api_key=${userAPIkey}`;
+    this.checkErrors = strictErrorChecking;
   }
 
   convertRegionNumberToRegionName(regionNumber) {
@@ -36,10 +39,21 @@ class RequestCreator {
     }
   }
 
-  getAgencies(type = "default", relevantInfo = "", pageNumber = 0) {
-    //This check isn't necessary?
-    check.exists(type, "Agencies GET request criteria");
+  checkParameters(numPassedArguments, targetMethod) {
+    if (this.checkErrors) {
+      let numRequiredArguments = targetMethod.length;
+      let methodName = targetMethod.name;
 
+      if (numPassedArguments < numRequiredArguments) {
+        throw new Error(`Insufficent arguments were passed to method ${methodName}. ${numRequiredArguments} were expected, but only ${numPassedArguments} were passed.`);
+      }
+      else if (numPassedArguments > numRequiredArguments) {
+        throw new Error(`Too many arguments were passed to method ${methodName}. ${numRequiredArguments} were expected, but ${numPassedArguments} were passed.`);
+      }
+    }
+  }
+
+  getAgencies(type = "default", relevantInfo = "", pageNumber = 0) {
     switch(type) {
       case "default":
         return RequestCreator.GETrequest(`${BASE_URL}agencies?${this.userAPIkey}`);
@@ -50,12 +64,7 @@ class RequestCreator {
       case "state":
         return RequestCreator.GETrequest(`${BASE_URL}agencies/byStateAbbr/${relevantInfo}?${this.userAPIkey}&page=${pageNumber}`);
         break;
-      default:
-        check.invalidParams("getAgencies");
-        break;
     }
-
-    //additional error handling in case a getAgencies call somehow gets through?
   }
 
   getStates(stateAbbreviation = "", pageNumber = 0) {
@@ -100,11 +109,17 @@ class RequestCreator {
 
   static GETrequest(targetURL) {
     return new Promise((resolve, reject) => {
-      fetch(targetURL).then((result) => {
+      fetch(targetURL)
+      .then((result) => {
         return result.json();
-      }).then((body) => {
+      })
+      .then((body) => {
         resolve(body);
-      });
+      })
+      .catch((error) => {
+        console.error("An error occurred while attempting to make the GET request.");
+        throw error;
+      })
     });
   }
 

@@ -8,6 +8,7 @@ Do not expect maintenance.
 <!--
 TODO LIST:
 (x) Complete all default methods
+( ) Document all default methods
 ( ) Come up with extra methods that extend functionality
 ( ) Document all methods
 ( ) Write examples for all methods
