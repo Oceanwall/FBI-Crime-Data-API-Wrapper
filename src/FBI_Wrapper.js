@@ -1,8 +1,12 @@
 const RequestCreator = require("./RequestCreator");
 
-//TODO: Constants for some of the strings?
 //TODO: Standardize parameter layouts?
 //TODO: Standardize order of methods, add custom functionalities?
+
+const NATIONAL_SCOPE = "national";
+const REGIONAL_SCOPE = "regions";
+const STATE_SCOPE = "states";
+const ORI_SCOPE = "agencies";
 
 class FBI_Wrapper {
 
@@ -15,7 +19,7 @@ class FBI_Wrapper {
     return this.request.getAgencies();
   }
 
-  //NOTE: Page Number is always an optional parameter
+  //NOTE: Page Number is an optional parameter
   //TODO: Maybe add checks to see if parameter types are correct (numbers, etc)
 
   //Should empty param be allowed? Makes same call as getAgencies then
@@ -32,46 +36,37 @@ class FBI_Wrapper {
   }
 
   getStateByAbbreviation(stateAbbreviation) {
-    return this.request.getStates(stateAbbreviation, pageNumber);
+    return this.request.getStates(stateAbbreviation);
+  }
+
+  getRegions() {
+    return this.request.getRegions();
+  }
+
+  getRegionsByName(regionName) {
+    if (typeof regionName == "number") {
+      regionName = this.request.convertRegionNumberToRegionName(regionName);
+    }
+    return this.request.getRegions(regionName);
   }
 
   getPoliceByORI(ori) {
-    return this.request.getPoliceEmployment("agencies", ori);
+    return this.request.getPoliceEmployment(ORI_SCOPE, ori);
   }
 
   getPoliceByNation() {
     return this.request.getPoliceEmployment();
   }
 
-  //TODO: Allow functionality with string number?
-  getPoliceByRegion(region) {
-    if (typeof region == "number") {
-      switch(region) {
-        case(0):
-          return this.request.getPoliceEmployment("regions", "U.S. Territories");
-          break;
-        case(1):
-          return this.request.getPoliceEmployment("regions", "Northeast");
-          break;
-        case(2):
-          return this.request.getPoliceEmployment("regions", "Midwest");
-          break;
-        case(3):
-          return this.request.getPoliceEmployment("regions", "South");
-          break;
-        case(4):
-          return this.request.getPoliceEmployment("regions", "West");
-          break;
-        case(99):
-          return this.request.getPoliceEmployment("regions", "Other");
-          break;
-      }
+  getPoliceByRegion(regionName) {
+    if (typeof regionName == "number") {
+      regionName = this.request.convertRegionNumberToRegionName(regionName);
     }
-    else return this.request.getPoliceEmployment("regions", region);
+    return this.request.getPoliceEmployment(REGIONAL_SCOPE, regionName);
   }
 
   getPoliceByState(stateAbbreviation) {
-    return this.request.getPoliceEmployment("states", stateAbbreviation);
+    return this.request.getPoliceEmployment(STATE_SCOPE, stateAbbreviation);
   }
 
   getCrimesByORI(ori, offense = "offenses") {
@@ -81,65 +76,93 @@ class FBI_Wrapper {
   //TODO: Look into seeing if offense / classification can be made optional
   //TODO: Check how to ensure that # of params matches # of params of function (make errors easier for user)
   getVictimsByORI(ori, offense, classification) {
-    return this.request.getParticipants("victim", "agencies", offense, classification, ori);
+    return this.request.getParticipants("victim", ORI_SCOPE, offense, classification, ori);
   }
 
   getVictimsByNation(offense, classification) {
-    return this.request.getParticipants("victim", "national", offense, classification);
+    return this.request.getParticipants("victim", NATIONAL_SCOPE, offense, classification);
   }
 
   //TODO: Allow region codes?
   getVictimsByRegion(regionName, offense, classification) {
-    return this.request.getParticipants("victim", "regions", offense, classification, regionName);
+    return this.request.getParticipants("victim", REGIONAL_SCOPE, offense, classification, regionName);
   }
 
   getVictimsByState(stateAbbreviation, offense, classification) {
-    return this.request.getParticipants("victim", "states", offense, classification, stateAbbreviation)
+    return this.request.getParticipants("victim", STATE_SCOPE, offense, classification, stateAbbreviation)
   }
 
   getOffendersByORI(ori, offense, classification) {
-    return this.request.getParticipants("offender", "agencies", offense, classification, ori);
+    return this.request.getParticipants("offender", ORI_SCOPE, offense, classification, ori);
   }
 
   getOffendersByNation(offense, classification) {
-    return this.request.getParticipants("offender", "national", offense, classification);
+    return this.request.getParticipants("offender", NATIONAL_SCOPE, offense, classification);
   }
 
   getOffendersByRegion(regionName, offense, classification) {
-    return this.request.getParticipants("offender", "regions", offense, classification, regionName);
+    return this.request.getParticipants("offender", REGIONAL_SCOPE, offense, classification, regionName);
   }
 
   getOffendersByState(stateAbbreviation, offense, classification) {
-    return this.request.getParticipants("offender", "states", offense, classification, stateAbbreviation)
+    return this.request.getParticipants("offender", STATE_SCOPE, offense, classification, stateAbbreviation)
   }
 
   getCrimeCountByNation(offense) {
-    return this.request.getCrimeCount("national", offense);
+    return this.request.getCrimeCount(NATIONAL_SCOPE, offense);
   }
 
   getCrimeCountByRegion(regionName, offense) {
-    return this.request.getCrimeCount("regions", offense, regionName);
+    return this.request.getCrimeCount(REGIONAL_SCOPE, offense, regionName);
   }
 
   getCrimeCountByState(stateAbbreviation, offense) {
-    return this.request.getCrimeCount("states", offense, stateAbbreviation);
+    return this.request.getCrimeCount(STATE_SCOPE, offense, stateAbbreviation);
   }
 
   //Add own crime stat method? Automatically gets crime related to certain ORI?
   getCrimeCountByORI(ori, offense) {
-    return this.request.getCrimeCount("agencies", offense, ori);
+    return this.request.getCrimeCount(ORI_SCOPE, offense, ori);
   }
 
   getDetailedArsonStatsByNation() {
-    return this.request.getArsonStats("national");
+    return this.request.getArsonStats(NATIONAL_SCOPE);
   }
 
   getDetailedArsonStatsByRegion(regionName) {
-    return this.request.getArsonStats("regions", regionName);
+    return this.request.getArsonStats(REGIONAL_SCOPE, regionName);
   }
 
   getDetailedArsonStatsByState(stateAbbreviation) {
-    return this.request.getArsonStats("states", stateAbbreviation);
+    return this.request.getArsonStats(STATE_SCOPE, stateAbbreviation);
+  }
+
+  getParticipationByORI(ori) {
+    return this.request.getAgencyParticipation(ORI_SCOPE, ori)
+  }
+
+  getParticipationByState(stateAbbreviation) {
+    return this.request.getAgencyParticipation(STATE_SCOPE, stateAbbreviation);
+  }
+
+  getParticipationByRegion(regionName) {
+    return this.request.getAgencyParticipation(REGIONAL_SCOPE, regionName);
+  }
+
+  getParticipationByNation() {
+    return this.request.getAgencyParticipation(NATIONAL_SCOPE);
+  }
+
+  getCrimeEstimatesByNation() {
+    return this.request.getEstimates(NATIONAL_SCOPE);
+  }
+
+  getCrimeEstimatesByRegion(regionName) {
+    return this.request.getEstimates(REGIONAL_SCOPE, regionName);
+  }
+
+  getCrimeEstimatesByState(stateAbbreviation) {
+    return this.request.getEstimates(STATE_SCOPE, stateAbbreviation);
   }
 
 

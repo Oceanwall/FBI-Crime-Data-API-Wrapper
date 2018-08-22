@@ -13,6 +13,29 @@ class RequestCreator {
     this.userAPIkey = `api_key=${userAPIkey}`;
   }
 
+  convertRegionNumberToRegionName(regionNumber) {
+    switch(regionNumber) {
+      case(0):
+        return "U.S. Territories";
+        break;
+      case(1):
+        return "Northeast";
+        break;
+      case(2):
+        return "Midwest";
+        break;
+      case(3):
+        return "South";
+        break;
+      case(4):
+        return "West";
+        break;
+      case(99):
+        return "Other";
+        break;
+    }
+  }
+
   getAgencies(type = "default", relevantInfo = "", pageNumber = 0) {
     //This check isn't necessary?
     check.exists(type, "Agencies GET request criteria");
@@ -39,6 +62,10 @@ class RequestCreator {
     return RequestCreator.GETrequest(`${BASE_URL}states/${stateAbbreviation}?${this.userAPIkey}&page=${pageNumber}`);
   }
 
+  getRegions(regionName = "") {
+    return RequestCreator.GETrequest(`${BASE_URL}regions/${regionName}?${this.userAPIkey}`);
+  }
+
   getPoliceEmployment(scope = "national", relevantInfo = "") {
     return RequestCreator.GETrequest(`${BASE_URL}police-employment/${scope}/${relevantInfo}?${this.userAPIkey}`);
   }
@@ -61,6 +88,14 @@ class RequestCreator {
   // Detailed stats offered only for arson...
   getArsonStats(scope, relevantInfo = "") {
     return RequestCreator.GETrequest(`${BASE_URL}arson/${scope}/${relevantInfo}?${this.userAPIkey}`);
+  }
+
+  getAgencyParticipation(scope, relevantInfo = "") {
+    return RequestCreator.GETrequest(`${BASE_URL}participation/${scope}/${relevantInfo}?${this.userAPIkey}`);
+  }
+
+  getEstimates(scope, relevantInfo = "") {
+    return RequestCreator.GETrequest(`${BASE_URL}estimates/${scope}/${relevantInfo}?${this.userAPIkey}`);
   }
 
   static GETrequest(targetURL) {

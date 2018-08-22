@@ -29,6 +29,15 @@ let wrapper = new FBI_Wrapper(process.env.API_KEY);
 //   console.log(results);
 // });
 
+//Getting information about regions
+
+// wrapper.getRegions().then((results) => {
+//   console.log(results);
+// });
+// wrapper.getRegionsByName("West").then((results) => {
+//   console.log(results);
+// });
+
 //Getting information about police employment statistics
 
 // wrapper.getPoliceByORI("MN0480400").then((results) => {
@@ -123,4 +132,27 @@ let wrapper = new FBI_Wrapper(process.env.API_KEY);
 //   console.log(results);
 // });
 
-//TODO: Participation, Estimates
+//participation with UCR data reporting (VIEW only, no downloading)
+// wrapper.getParticipationByNation().then((results) => {
+//   console.log(results);
+// });
+// wrapper.getParticipationByRegion("West").then((results) => {
+//   console.log(results);
+// });
+// wrapper.getParticipationByState("TX").then((results) => {
+//   console.log(results);
+// });
+// wrapper.getParticipationByORI("MI2802800").then((results) => {
+//   console.log(results);
+// });
+
+//estimates
+// wrapper.getCrimeEstimatesByNation().then((results) => {
+//   console.log(results);
+// });
+// wrapper.getCrimeEstimatesByRegion("West").then((results) => {
+//   console.log(results);
+// });
+// wrapper.getCrimeEstimatesByState("TX").then((results) => {
+//   console.log(results);
+// });
