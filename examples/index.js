@@ -52,9 +52,9 @@ let wrapper = new FBI_Wrapper(process.env.API_KEY);
 // wrapper.getPoliceByRegion("Midwest").then((results) => {
 //   console.log(results);
 // });
-wrapper.getPoliceByState("TX").then((results) => {
-  console.log(results);
-});
+// wrapper.getPoliceByState("TX").then((results) => {
+//   console.log(results);
+// });
 
 //Getting information about offenses via ORI
 //Types of offenses:  "violent_crime" ,
@@ -72,7 +72,7 @@ wrapper.getPoliceByState("TX").then((results) => {
 //   console.log(results);
 // });
 // wrapper.getCrimesByORI("MN0480400", "burglary").then((results) => {
-//   console.log(results);
+//   console.log(results.results);
 // });
 
 
@@ -82,7 +82,7 @@ wrapper.getPoliceByState("TX").then((results) => {
 // wrapper.getVictimsByORI("MI2802800", "burglary", "age").then((results) => {
 //   console.log(results);
 // });
-// wrapper.getVictimsByNation("burglary", "age").then((results) => {
+// wrapper.getVictimsByNation("burglary", "count").then((results) => {
 //   console.log(results);
 // });
 // wrapper.getVictimsByRegion("West", "burglary", "age").then((results) => {
@@ -128,9 +128,9 @@ wrapper.getPoliceByState("TX").then((results) => {
 // wrapper.getDetailedArsonStatsByRegion("West").then((results) => {
 //   console.log(results);
 // });
-// wrapper.getDetailedArsonStatsByState("TX").then((results) => {
-//   console.log(results);
-// });
+wrapper.getDetailedArsonStatsByState("TX").then((results) => {
+  console.log(results);
+});
 
 //participation with UCR data reporting (VIEW only, no downloading)
 // wrapper.getParticipationByNation().then((results) => {

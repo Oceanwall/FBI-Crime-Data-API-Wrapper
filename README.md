@@ -9,6 +9,7 @@ Do not expect maintenance.
 TODO LIST:
 (x) Complete all default methods
 ( ) Document all default methods
+( ) Change return types (from Promise -> Object to Promise -> Array for that which can be isolated)
 ( ) Come up with extra methods that extend functionality
 ( ) Document all methods
 ( ) Write examples for all methods
