@@ -128,9 +128,9 @@ let wrapper = new FBI_Wrapper(process.env.API_KEY);
 // wrapper.getDetailedArsonStatsByRegion("West").then((results) => {
 //   console.log(results);
 // });
-wrapper.getDetailedArsonStatsByState("TX").then((results) => {
-  console.log(results);
-});
+// wrapper.getDetailedArsonStatsByState("TX").then((results) => {
+//   console.log(results);
+// });
 
 //participation with UCR data reporting (VIEW only, no downloading)
 // wrapper.getParticipationByNation().then((results) => {
@@ -142,7 +142,7 @@ wrapper.getDetailedArsonStatsByState("TX").then((results) => {
 // wrapper.getParticipationByState("TX").then((results) => {
 //   console.log(results);
 // });
-// wrapper.getParticipationByORI("MI2802800").then((results) => {
+// wrapper.getParticipationByORI("MN0480400").then((results) => {
 //   console.log(results);
 // });
 

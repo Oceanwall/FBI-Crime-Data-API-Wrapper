@@ -72,15 +72,22 @@ class RequestCreator {
   }
 
   getRegions(regionName = "") {
-    return RequestCreator.GETrequest(`${BASE_URL}regions/${regionName}?${this.userAPIkey}`);
+    return new Promise((resolve, reject) => {
+      RequestCreator.GETrequest(`${BASE_URL}regions/${regionName}?${this.userAPIkey}`).then((rawResults) => {
+        if (regionName == "") {
+          resolve(rawResults.results);
+        }
+        else resolve(rawResults);
+      });
+    });
   }
 
   getPoliceEmployment(scope = "national", relevantInfo = "") {
-    return RequestCreator.GETrequest(`${BASE_URL}police-employment/${scope}/${relevantInfo}?${this.userAPIkey}`);
-  }
-
-  getCrimeSummary(ori, offense) {
-    return RequestCreator.GETrequest(`${BASE_URL}summarized/agencies/${ori}/${offense}?${this.userAPIkey}`);
+    return new Promise((resolve, reject) => {
+      RequestCreator.GETrequest(`${BASE_URL}police-employment/${scope}/${relevantInfo}?${this.userAPIkey}`).then((rawResults) => {
+        resolve(rawResults.results);
+      });
+    });
   }
 
   getParticipants(type, scope, offense, classification, relevantInfo) {
@@ -91,20 +98,47 @@ class RequestCreator {
   }
 
   getCrimeCount(scope, offense, relevantInfo = "") {
-    return this.getParticipants("offense", scope, offense, "count", relevantInfo);
+    return new Promise((resolve, reject) => {
+      this.getParticipants("offense", scope, offense, "count", relevantInfo).then((rawResults) => {
+        resolve(rawResults.data);
+      });
+    });
+  }
+
+  getCrimeSummary(ori, offense) {
+    return new Promise((resolve, reject) => {
+      RequestCreator.GETrequest(`${BASE_URL}summarized/agencies/${ori}/${offense}?${this.userAPIkey}`).then((rawResults) => {
+        if (offense == "offenses") {
+          resolve(rawResults.results);
+        }
+        else resolve(rawResults);
+      });
+    });
   }
 
   // Detailed stats offered only for arson...
   getArsonStats(scope, relevantInfo = "") {
-    return RequestCreator.GETrequest(`${BASE_URL}arson/${scope}/${relevantInfo}?${this.userAPIkey}`);
+    return new Promise((resolve, reject) => {
+      RequestCreator.GETrequest(`${BASE_URL}arson/${scope}/${relevantInfo}?${this.userAPIkey}`).then((rawResults) => {
+        resolve(rawResults.results);
+      });
+    });
   }
 
   getAgencyParticipation(scope, relevantInfo = "") {
-    return RequestCreator.GETrequest(`${BASE_URL}participation/${scope}/${relevantInfo}?${this.userAPIkey}`);
+    return new Promise((resolve, reject) => {
+      RequestCreator.GETrequest(`${BASE_URL}participation/${scope}/${relevantInfo}?${this.userAPIkey}`).then((rawResults) => {
+        resolve(rawResults.results);
+      });
+    });
   }
 
   getEstimates(scope, relevantInfo = "") {
-    return RequestCreator.GETrequest(`${BASE_URL}estimates/${scope}/${relevantInfo}?${this.userAPIkey}`);
+    return new Promise((resolve, reject) => {
+      RequestCreator.GETrequest(`${BASE_URL}estimates/${scope}/${relevantInfo}?${this.userAPIkey}`).then((rawResults) => {
+        resolve(rawResults.results);
+      });
+    });
   }
 
   static GETrequest(targetURL) {

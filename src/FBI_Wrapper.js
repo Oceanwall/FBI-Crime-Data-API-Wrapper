@@ -94,7 +94,7 @@ class FBI_Wrapper {
 
   /**
    * Gets identifying information about all the regions in the U.S
-   * @return {Object} Information about all regions in the U.S
+   * @return {Array} Information about all regions in the U.S
    */
   getRegions() {
     this.request.checkParameters(arguments.length, this.getRegions);
@@ -118,7 +118,7 @@ class FBI_Wrapper {
 
   /**
    * Gets nationwide police employment statistics for each year (up to 1960).
-   * @return {Object} Nationwide police employment statistics for each year
+   * @return {Array} Nationwide police employment statistics for each year
    */
   getPoliceByNation() {
     this.request.checkParameters(arguments.length, this.getPoliceByNation);
@@ -128,7 +128,7 @@ class FBI_Wrapper {
   /**
    * Gets regionwide police employment statistics for each year (up to 1960).
    * @param  {Number|String} regionName This region's numerical code. Note that this parameter can also be a String (the region's name).
-   * @return {Object}                   Regionwide police employment statistics for each year
+   * @return {Array}                    Regionwide police employment statistics for each year
    */
   getPoliceByRegion(regionName) {
     this.request.checkParameters(arguments.length, this.getPoliceByRegion);
@@ -141,7 +141,7 @@ class FBI_Wrapper {
   /**
    * Gets statewide police employment statistics for each year (up to 1960).
    * @param  {String} stateAbbreviation State Abbreviation, two characters long
-   * @return {Object}                   Statewide police employment statistics for each year
+   * @return {Array}                    Statewide police employment statistics for each year
    */
   getPoliceByState(stateAbbreviation) {
     this.request.checkParameters(arguments.length, this.getPoliceByState);
@@ -151,7 +151,7 @@ class FBI_Wrapper {
   /**
    * Get police employment statistics for a certain agency (hypothetically up the 1960, but many agencies didn't start recording information until later).
    * @param  {String} ori The ORI of the desired agency.
-   * @return {Object}     Agency police employment statistics for each year, in addition to other details about the agency (such as the population that year of the served area).
+   * @return {Array}      Agency police employment statistics for each year, in addition to other details about the agency (such as the population that year of the served area).
    */
   getPoliceByORI(ori) {
     this.request.checkParameters(arguments.length, this.getPoliceByORI);
@@ -288,7 +288,7 @@ class FBI_Wrapper {
    * This method encompasses nation-wide data.
    * Additional information can be found under method getVictimsByNation
    * @param  {String} offense The offense for which to find the # of incidents and occurrences.
-   * @return {Object}         Entries for each year containing the # of incidents and (offense occurrences) involving the given offense
+   * @return {Array}          Entries for each year containing the # of incidents and (offense occurrences) involving the given offense
    */
   getCrimeCountByNation(offense) {
     this.request.checkParameters(arguments.length, this.getCrimeCountByNation);
@@ -301,7 +301,7 @@ class FBI_Wrapper {
    * Additional information can be found under method getCrimeCountByNation
    * @param  {Number|String} regionName This region's numerical code. Note that this parameter can also be a String (the region's name).
    * @param  {String}        offense    The offense for which to find the # of incidents and occurrences.
-   * @return {Object}                   Entries for each year containing the # of incidents and (offense occurrences) involving the given offense
+   * @return {Array}                    Entries for each year containing the # of incidents and (offense occurrences) involving the given offense
    */
   getCrimeCountByRegion(regionName, offense) {
     this.request.checkParameters(arguments.length, this.getCrimeCountByRegion);
@@ -317,7 +317,7 @@ class FBI_Wrapper {
    * Additional information can be found under method getCrimeCountByNation
    * @param  {String} stateAbbreviation State Abbreviation, two characters long
    * @param  {String} offense           The offense for which to find the # of incidents and occurrences.
-   * @return {Object}                   Entries for each year containing the # of incidents and (offense occurrences) involving the given offense
+   * @return {Array}                    Entries for each year containing the # of incidents and (offense occurrences) involving the given offense
    */
   getCrimeCountByState(stateAbbreviation, offense) {
     this.request.checkParameters(arguments.length, this.getCrimeCountByState);
@@ -330,7 +330,7 @@ class FBI_Wrapper {
    * Additional information can be found under method getCrimeCountByNation
    * @param  {String} ori     The ORI of the agency in question
    * @param  {String} offense The offense for which to find offenders.
-   * @return {Object}         Entries for each year containing the # of incidents and (offense occurrences) involving the given offense
+   * @return {Array}          Entries for each year containing the # of incidents and (offense occurrences) involving the given offense
    */
   getCrimeCountByORI(ori, offense) {
     this.request.checkParameters(arguments.length, this.getCrimeCountByORI);
@@ -342,7 +342,7 @@ class FBI_Wrapper {
    * If no one type of offense is specified, then this method returns statistics about all types of offenses.
    * @param  {String} ori                  The ORI of the agency in question
    * @param  {String} [offense="offenses"] The offense for which to find statistics. If no offense is specified, then get statistics about all offenses.
-   * @return {Object}                      Entries for each year containing detailed statistics about (each offense).
+   * @return {Array}                       Entries for each year containing detailed statistics about (each offense).
    */
   getCrimesByORI(ori, offense = "offenses") {
     return this.request.getCrimeSummary(ori, offense);
@@ -357,18 +357,8 @@ class FBI_Wrapper {
    */
   getDetailedArsonStatsByNation() {
     this.request.checkParameters(arguments.length, this.getDetailedArsonStatsByNation);
-    return new Promise((resolve, reject) => {
-      this.request.getArsonStats(NATIONAL_SCOPE).then((rawResults) => {
-        resolve(rawResults.results);
-      });
-    });
+    return this.request.getArsonStats(NATIONAL_SCOPE);
   }
-
-  /**
-   * For each year, gets detailed statistics about arson, including the # of reports and estimated property damage.
-   * This method encompasses nation-wide data.
-   * @return {Array} Entries for each year detailing arson statistics.
-   */
 
   /**
    * For each year, gets detailed statistics about arson, including the # of reports and estimated property damage.
@@ -379,11 +369,10 @@ class FBI_Wrapper {
    */
   getDetailedArsonStatsByRegion(regionName) {
     this.request.checkParameters(arguments.length, this.getDetailedArsonStatsByRegion);
-    return new Promise((resolve, reject) => {
-      this.request.getArsonStats(REGIONAL_SCOPE, regionName).then((rawResults) => {
-        resolve(rawResults.results);
-      });
-    });
+    if (typeof regionName == "number") {
+      regionName = this.request.convertRegionNumberToRegionName(regionName);
+    }
+    return this.request.getArsonStats(REGIONAL_SCOPE, regionName);
   }
 
   /**
@@ -394,30 +383,50 @@ class FBI_Wrapper {
    */
   getDetailedArsonStatsByState(stateAbbreviation) {
     this.request.checkParameters(arguments.length, this.getDetailedArsonStatsByState);
-    return new Promise((resolve, reject) => {
-      this.request.getArsonStats(STATE_SCOPE, stateAbbreviation).then((rawResults) => {
-        resolve(rawResults.results);
-      });
-    });
+    return this.request.getArsonStats(STATE_SCOPE, stateAbbreviation);
   }
 
   //Get participation statistics (with UCR)
 
+  /**
+   * For each year, returns the total number of agencies in the U.S in addition to what type of data they submit (SRS, NIBRS).
+   * SRS is the old hierarchical crime reporting system (Summary Reporting System) that only collects a limited range of data.
+   * NIBRS is the new system (National Incident-Based Reporting System) that allows for more extensive data collection (more crime categories).
+   * @return {Array} Entries for each year detailing the number of agencies and how many collect what type of information
+   */
   getParticipationByNation() {
     this.request.checkParameters(arguments.length, this.getParticipationByNation);
     return this.request.getAgencyParticipation(NATIONAL_SCOPE);
   }
 
+  /**
+   * For each year, returns the total number of agencies in the specified region in addition to what type of data they submit (SRS, NIBRS).
+   * @param  {Number|String} regionName This region's numerical code. Note that this parameter can also be a String (the region's name).
+   * @return {Array}                    Entries for each year detailing the number of agencies and how many collect what type of information
+   */
   getParticipationByRegion(regionName) {
     this.request.checkParameters(arguments.length, this.getParticipationByRegion);
+    if (typeof regionName == "number") {
+      regionName = this.request.convertRegionNumberToRegionName(regionName);
+    }
     return this.request.getAgencyParticipation(REGIONAL_SCOPE, regionName);
   }
 
+  /**
+   * For each year, returns the total number of agencies in the specified state in addition to what type of data they submit (SRS, NIBRS).
+   * @param  {String} stateAbbreviation State Abbreviation, two characters long
+   * @return {Array}                    Entries for each year detailing the number of agencies and how many collect what type of information
+   */
   getParticipationByState(stateAbbreviation) {
     this.request.checkParameters(arguments.length, this.getParticipationByState);
     return this.request.getAgencyParticipation(STATE_SCOPE, stateAbbreviation);
   }
 
+  /**
+   * For each year, returns the type of data that this specific agency has been reporting, in addition to other relevant data about the agency.
+   * @param  {String} ori The ORI of the agency in question
+   * @return {Array}      Entries for each year detailing the number of agencies and how many collect what type of information
+   */
   getParticipationByORI(ori) {
     this.request.checkParameters(arguments.length, this.getParticipationByORI);
     return this.request.getAgencyParticipation(ORI_SCOPE, ori)
@@ -425,16 +434,37 @@ class FBI_Wrapper {
 
   //Get crime estimates
 
+  /**
+   * For each year, returns the estimated number of crimes (in different categories) that occurred.
+   * This method encompasses nation-wide data.
+   * @return {Array} Entries for each year detailing the estimated number of crimes that occurred.
+   */
   getCrimeEstimatesByNation() {
     this.request.checkParameters(arguments.length, this.getCrimeEstimatesByNation);
     return this.request.getEstimates(NATIONAL_SCOPE);
   }
 
+  /**
+   * For each year, returns the estimated number of crimes (in different categories) that occurred.
+   * Note that this method breaks down its statistics into states, providing estimates for each state within the region.
+   * This method encompasses region-wide data.
+   * @param  {Number|String} regionName This region's numerical code. Note that this parameter can also be a String (the region's name).
+   * @return {Array}                    Entries for each year detailing the estimated number of crimes that occurred.
+   */
   getCrimeEstimatesByRegion(regionName) {
     this.request.checkParameters(arguments.length, this.getCrimeEstimatesByRegion);
+    if (typeof regionName == "number") {
+      regionName = this.request.convertRegionNumberToRegionName(regionName);
+    }
     return this.request.getEstimates(REGIONAL_SCOPE, regionName);
   }
 
+  /**
+   * For each year, returns the estimated number of crimes (in different categories) that occurred.
+   * This method encompasses state-wide data.
+   * @param  {String} stateAbbreviation State Abbreviation, two characters long
+   * @return {Array}                    Entries for each year detailing the estimated number of crimes that occurred.
+   */
   getCrimeEstimatesByState(stateAbbreviation) {
     this.request.checkParameters(arguments.length, this.getCrimeEstimatesByState);
     return this.request.getEstimates(STATE_SCOPE, stateAbbreviation);
