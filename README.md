@@ -1,7 +1,35 @@
+# FBI Crime Data API Wrapper
+
 Minimalist FBI Crime Data API Wrapper, meant primarily for personal use with a future project, but shared publicly so that others can also use it.
 
-Fulfills most if not all of the functionality found here: <https://crime-data-explorer.fr.cloud.gov/api>
-Also extends some additional functionality that might be helpful.
+Fulfills most if not all of the functionality indicated by the [FBI crime data API found here](https://crime-data-explorer.fr.cloud.gov/api). Also extends some additional functionality that might be helpful.
+
+## Basic Usage
+
+```
+require('dotenv').config();
+
+const FBI_Wrapper = require("../src/FBI_Wrapper");
+let wrapper = new FBI_Wrapper(process.env.API_KEY);
+
+wrapper.getVictimsByORI("MI2802800", "burglary", "age").then((results) => {
+  console.log(results);
+});
+wrapper.getCrimeCountByRegion("West", "aggravated-assault").then((results) => {
+  console.log(results);
+});
+wrapper.getVictimsByState("TX", "burglary", "age").then((results) => {
+  console.log(results);
+});
+```
+
+Additional examples for how to use these methods can be found in examples/index.js.
+
+For information about how to use a .env file, see [documentation for Dotenv](https://www.npmjs.com/package/dotenv).
+
+## Additional Remarks
+
+To understand the data provided by this API wrapper, it can be helpful to look at other projects that have used this data. One such (official US Government) project is the FBI's [crime data explorer](https://crime-data-explorer.fr.cloud.gov/api), which visualizes this information.
 
 Do not expect maintenance.
 
@@ -10,6 +38,8 @@ TODO LIST:
 (x) Complete all default methods
 (x) Document all default methods
 (x) Change return types (from Promise -> Object to Promise -> Array for that which can be isolated)
+(x) Write examples for default methods
+(x) Write test cases for all default methods
 ( ) Come up with extra methods that extend functionality
 ( ) Document all methods
 ( ) Write examples for all methods

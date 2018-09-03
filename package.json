@@ -1,0 +1,43 @@
+{
+  "name": "fbi-ucr-api",
+  "version": "1.0.0",
+  "description": "Minimalist Node.js wrapper for the FBI Uniform Crime Reporting API",
+  "main": "src/FBI_Wrapper.js",
+  "directories": {
+    "example": "examples",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha --reporter spec --no-timeouts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Oceanwall/FBI-Crime-Data-API-Wrapper.git"
+  },
+  "keywords": [
+    "FBI",
+    "UCR",
+    "Uniform",
+    "Crime",
+    "Reporting",
+    "Data",
+    "NIBRS",
+    "SRS",
+    "Agency",
+    "Police"
+  ],
+  "author": "Matthew Zhao",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Oceanwall/FBI-Crime-Data-API-Wrapper/issues"
+  },
+  "homepage": "https://github.com/Oceanwall/FBI-Crime-Data-API-Wrapper#readme",
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0"
+  },
+  "dependencies": {
+    "dotenv": "^6.0.0",
+    "node-fetch": "^2.2.0"
+  }
+}
