@@ -1,8 +1,8 @@
-# FBI Crime Data API Wrapper
+# FBI (Uniform) Crime Data API Wrapper
 
-Minimalist FBI Crime Data API Wrapper, meant primarily for personal use with a future project, but shared publicly so that others can also use it.
+Minimalist FBI Uniform Crime Data (UCR) API Wrapper, meant primarily for personal use with a future project, but shared publicly so that others can also use it.
 
-Fulfills most if not all of the functionality indicated by the [FBI crime data API found here](https://crime-data-explorer.fr.cloud.gov/api). Also extends some additional functionality that might be helpful.
+Fulfills most if not all of the functionality indicated by the [FBI uniform crime data API found here](https://crime-data-explorer.fr.cloud.gov/api). Also extends some additional functionality that might be helpful.
 
 ## Basic Usage
 
@@ -25,11 +25,23 @@ wrapper.getVictimsByState("TX", "burglary", "age").then((results) => {
 
 Additional examples for how to use these methods can be found in examples/index.js.
 
-For information about how to use a .env file, see [documentation for Dotenv](https://www.npmjs.com/package/dotenv).
+For information about how to use a .env file, see [documentation for dotenv](https://www.npmjs.com/package/dotenv).
+
+## Testing
+
+```
+npm test
+```
+
+This command checks the intended return types of all methods versus their actual return types to ensure that they are returning the correct type of information.
+
+**Note:** Running all of the tests may take a significant amount of time (between 1-2 minutes) due to all of the GET requests made by the API wrapper.
 
 ## Additional Remarks
 
 To understand the data provided by this API wrapper, it can be helpful to look at other projects that have used this data. One such (official US Government) project is the FBI's [crime data explorer](https://crime-data-explorer.fr.cloud.gov/api), which visualizes this information.
+
+[Find this package on npm here](https://www.npmjs.com/package/fbi-ucr-api).
 
 Do not expect maintenance.
 
