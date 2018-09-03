@@ -9,7 +9,7 @@ Fulfills most if not all of the functionality indicated by the [FBI uniform crim
 ```
 require('dotenv').config();
 
-const FBI_Wrapper = require("../src/FBI_Wrapper");
+const FBI_Wrapper = require("fbi-ucr-api");
 let wrapper = new FBI_Wrapper(process.env.API_KEY);
 
 wrapper.getVictimsByORI("MI2802800", "burglary", "age").then((results) => {
@@ -42,6 +42,8 @@ This command checks the intended return types of all methods versus their actual
 To understand the data provided by this API wrapper, it can be helpful to look at other projects that have used this data. One such (official US Government) project is the FBI's [crime data explorer](https://crime-data-explorer.fr.cloud.gov/api), which visualizes this information.
 
 [Find this package on npm here](https://www.npmjs.com/package/fbi-ucr-api).
+
+This API wrapper is licensed under the MIT License. Feel free to fork this repo and make whatever edits you want to the wrapper.
 
 Do not expect maintenance.
 
