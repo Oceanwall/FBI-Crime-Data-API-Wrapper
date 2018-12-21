@@ -57,8 +57,9 @@ TODO LIST:
 ( ) Come up with extra methods that extend functionality
 ( ) Document all methods
 ( ) Write examples for all methods
-( ) Write test cases for all methods (try mocha?)
-( ) Publish and use in React Native app
+( ) Write test cases for all methods
+( ) Error checking for all methods (check parameters? ensure correct typing?)
+( ) Error checking test cases for all methods
 -->
 
 ## API_DOCUMENTATION

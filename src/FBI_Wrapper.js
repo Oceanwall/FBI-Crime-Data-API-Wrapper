@@ -17,7 +17,7 @@ const RequestCreator = require("./RequestCreator");
 */
 
 //TODO: Add custom functionalities?
-//TODO: Maybe add checks to see if parameter types are correct? (numbers, etc)
+//TODO: Maybe add checks to see if parameter types are correct? (numbers, etc) (avoid undefineds, etc)
 
 
 /* ALL METHODS RETURN PROMISES, THE RETURN TYPES ARE AFTER THE PROMISES HAVE BEEN RESOLVED */
@@ -30,7 +30,7 @@ const ORI_SCOPE = "agencies";
 class FBI_Wrapper {
 
   /**
-   * Creates a new FBI_Wrapper object, which is used to more easily access the FBI UCR API.
+   * Creates a new FBI_Wrapper object, which is used to more easily access the FBI UCR API.<br>
    * @param {String}  userAPIkey                 The api.data.gov API key, which is required to access the FBI UCR API. API Keys can be generated here: https://api.data.gov/signup/
    * @param {Boolean} [strictErrorChecking=true] Indicates whether or not the wrapper should check for potential errors, such as a mismatch in the number of parameters passed to a method.
    */
@@ -41,7 +41,7 @@ class FBI_Wrapper {
   //Get agencies
 
   /**
-   * Gets information about all agencies in the United States.
+   * Gets information about all agencies in the United States.<br>
    * @return {Object} Information about each agency in the U.S, subdivided into states that are further subdivided into agency objects (identified by their ORI-9 (Department Originating Agency Identifier Number, character length 9)).
    */
   getAgencies() {
@@ -50,7 +50,7 @@ class FBI_Wrapper {
   }
 
   /**
-   * Gets information about all agencies in a given state
+   * Gets information about all agencies in a given state<br>
    * @param  {String} stateAbbreviation State abbreviation
    * @param  {Number} [pageNumber=0]    For states with many agencies, data is delivered in multiple "pages", as indicated by the pagination property/object in the returned object. This property allows you to select which page of results you want (Pages are 0-indexed).
    * @return {Object}                   Information about each agency in a given state.
@@ -60,8 +60,8 @@ class FBI_Wrapper {
   }
 
   /**
-   * Gets information about a specific agency, as identified by the provided ORI-9.
-   * If no ORI is provided, then gets information about all agencies in the United States.
+   * Gets information about a specific agency, as identified by the provided ORI-9.<br>
+   * If no ORI is provided, then gets information about all agencies in the United States.<br>
    * @param  {String} [ori=""] The ORI of the desired agency.
    * @return {Object}          Information about the desired agency, or if no ORI is provided, information about each agency in the U.S.
    */
@@ -72,7 +72,7 @@ class FBI_Wrapper {
   //Get states
 
   /**
-   * Gets identifying information about all the states in the U.S, such as their ID, abbreviation, and region.
+   * Gets identifying information about all the states in the U.S, such as their ID, abbreviation, and region.<br>
    * @param  {Number} [pageNumber=0] Denotes a specific page of results to view, as indicated by the pagination property/object. Each call only returns 20 states at a time.
    * @return {Object}                Information about (20) states.
    */
@@ -81,7 +81,7 @@ class FBI_Wrapper {
   }
 
   /**
-   * Gets identifying information about a specific state based on its abbreviation.
+   * Gets identifying information about a specific state based on its abbreviation.<br>
    * @param  {String} stateAbbreviation State abbreviation (two characters long, like TX).
    * @return {Object}                   Identifying information about that state.
    */
@@ -93,7 +93,7 @@ class FBI_Wrapper {
   //Get regions
 
   /**
-   * Gets identifying information about all the regions in the U.S
+   * Gets identifying information about all the regions in the U.S<br>
    * @return {Array} Information about all regions in the U.S
    */
   getRegions() {
@@ -102,7 +102,7 @@ class FBI_Wrapper {
   }
 
   /**
-   * Gets identifying information about a specific region based on its name or numerical code.
+   * Gets identifying information about a specific region based on its name or numerical code.<br>
    * @param  {Number|String} regionName This region's numerical code. Note that this parameter can also be a String (the region's name).
    * @return {Object}                   Information about that specific region.
    */
@@ -117,7 +117,7 @@ class FBI_Wrapper {
   //Get police employment statistics
 
   /**
-   * Gets nationwide police employment statistics for each year (up to 1960).
+   * Gets nationwide police employment statistics for each year (up to 1960).<br>
    * @return {Array} Nationwide police employment statistics for each year
    */
   getPoliceByNation() {
@@ -126,7 +126,7 @@ class FBI_Wrapper {
   }
 
   /**
-   * Gets regionwide police employment statistics for each year (up to 1960).
+   * Gets regionwide police employment statistics for each year (up to 1960).<br>
    * @param  {Number|String} regionName This region's numerical code. Note that this parameter can also be a String (the region's name).
    * @return {Array}                    Regionwide police employment statistics for each year
    */
@@ -139,7 +139,7 @@ class FBI_Wrapper {
   }
 
   /**
-   * Gets statewide police employment statistics for each year (up to 1960).
+   * Gets statewide police employment statistics for each year (up to 1960).<br>
    * @param  {String} stateAbbreviation State Abbreviation, two characters long
    * @return {Array}                    Statewide police employment statistics for each year
    */
@@ -149,7 +149,7 @@ class FBI_Wrapper {
   }
 
   /**
-   * Get police employment statistics for a certain agency (hypothetically up the 1960, but many agencies didn't start recording information until later).
+   * Get police employment statistics for a certain agency (hypothetically up the 1960, but many agencies didn't start recording information until later).<br>
    * @param  {String} ori The ORI of the desired agency.
    * @return {Array}      Agency police employment statistics for each year, in addition to other details about the agency (such as the population that year of the served area).
    */
@@ -161,11 +161,11 @@ class FBI_Wrapper {
   //Get victim demographic statistics
 
   /**
-   * Given a specific offense and a classification criteria for the victims, returns for each year the number of victims (of said offense) that fall into each category of the classification criteria.
-   * This method encompasses nation-wide data.
-   * Possible offenses are: "violent_crime", "homicide", "rape-legacy", "rape-revised", "robbery", "aggravated-assault", "property-crime", "burglary", "larceny", "motor-vehicle-theft", and "arson".
-   * Possible classifications are: "age", "count", "ethnicity", "race", and "sex".
-   * Note that entries are not guaranteed to be in any order, and also be aware that for some years, not all agencies reported data, so data might be skewed from before 2005.
+   * Given a specific offense and a classification criteria for the victims, returns for each year the number of victims (of said offense) that fall into each category of the classification criteria.<br>
+   * This method encompasses nation-wide data.<br>
+   * Possible offenses are: "violent_crime", "homicide", "rape-legacy", "rape-revised", "robbery", "aggravated-assault", "property-crime", "burglary", "larceny", "motor-vehicle-theft", and "arson".<br>
+   * Possible classifications are: "age", "count", "ethnicity", "race", and "sex".<br>
+   * Note that entries are not guaranteed to be in any order, and also be aware that for some years, not all agencies reported data, so data might be skewed from before 2005.<br>
    * @param  {String} offense        The offense to find victims of.
    * @param  {String} classification The classification criteria by which the victims will be categorized.
    * @return {Object}                Entries for each year containing the # of (nation-wide victims of the given offense) in each category type.
@@ -176,9 +176,9 @@ class FBI_Wrapper {
   }
 
   /**
-   * Given a specific offense and a classification criteria for the victims, returns for each year the number of victims (of said offense) that fall into each category of the classification criteria.
-   * This method encompasses region-wide data.
-   * Additional information can be found under method getVictimsByNation
+   * Given a specific offense and a classification criteria for the victims, returns for each year the number of victims (of said offense) that fall into each category of the classification criteria.<br>
+   * This method encompasses region-wide data.<br>
+   * Additional information can be found under method getVictimsByNation<br>
    * @param  {Number|String} regionName     This region's numerical code. Note that this parameter can also be a String (the region's name).
    * @param  {String} offense               The offense to find victims of.
    * @param  {String} classification        The classification criteria by which the victims will be categorized.
@@ -193,9 +193,9 @@ class FBI_Wrapper {
   }
 
   /**
-   * Given a specific offense and a classification criteria for the victims, returns for each year the number of victims (of said offense) that fall into each category of the classification criteria.
-   * This method encompasses state-wide data.
-   * Additional information can be found under method getVictimsByNation
+   * Given a specific offense and a classification criteria for the victims, returns for each year the number of victims (of said offense) that fall into each category of the classification criteria.<br>
+   * This method encompasses state-wide data.<br>
+   * Additional information can be found under method getVictimsByNation<br>
    * @param  {String} stateAbbreviation State Abbreviation, two characters long
    * @param  {String} offense           The offense to find victims of.
    * @param  {String} classification    The classification criteria by which the victims will be categorized.
@@ -207,9 +207,9 @@ class FBI_Wrapper {
   }
 
   /**
-   * Given a specific offense and a classification criteria for the victims, returns for each year the number of victims (of said offense) that fall into each category of the classification criteria.
-   * This method encompasses agency-wide data.
-   * Additional information can be found under method getVictimsByNation
+   * Given a specific offense and a classification criteria for the victims, returns for each year the number of victims (of said offense) that fall into each category of the classification criteria.<br>
+   * This method encompasses agency-wide data.<br>
+   * Additional information can be found under method getVictimsByNation<br>
    * @param  {String} ori            The ORI of the agency in question
    * @param  {String} offense        The offense to find victims of.
    * @param  {String} classification The classification criteria by which the victims will be categorized.
@@ -223,9 +223,9 @@ class FBI_Wrapper {
   //Get offender demographic statistics
 
   /**
-   * Given a specific offense and a classification criteria for the offenders, returns for each year the number of offenders (who committed said offense) that fall into each category of the classification criteria.
-   * This method encompasses nation-wide data.
-   * Additional information can be found under method getVictimsByNation
+   * Given a specific offense and a classification criteria for the offenders, returns for each year the number of offenders (who committed said offense) that fall into each category of the classification criteria.<br>
+   * This method encompasses nation-wide data.<br>
+   * Additional information can be found under method getVictimsByNation<br>
    * @param  {String} offense        The offense for which to find offenders.
    * @param  {String} classification The classification criteria by which the offenders will be categorized.
    * @return {Object}                Entries for each year containing the # of (nation-wide offenders who committed the given offense) in each category type.
@@ -236,9 +236,9 @@ class FBI_Wrapper {
   }
 
   /**
-   * Given a specific offense and a classification criteria for the offenders, returns for each year the number of offenders (who committed said offense) that fall into each category of the classification criteria.
-   * This method encompasses region-wide data.
-   * Additional information can be found under method getVictimsByNation
+   * Given a specific offense and a classification criteria for the offenders, returns for each year the number of offenders (who committed said offense) that fall into each category of the classification criteria.<br>
+   * This method encompasses region-wide data.<br>
+   * Additional information can be found under method getVictimsByNation<br>
    * @param  {Number|String} regionName     This region's numerical code. Note that this parameter can also be a String (the region's name).
    * @param  {String} offense               The offense for which to find offenders.
    * @param  {String} classification        The classification criteria by which the offenders will be categorized.
@@ -253,9 +253,9 @@ class FBI_Wrapper {
   }
 
   /**
-   * Given a specific offense and a classification criteria for the offenders, returns for each year the number of offenders (who committed said offense) that fall into each category of the classification criteria.
-   * This method encompasses state-wide data.
-   * Additional information can be found under method getVictimsByNation
+   * Given a specific offense and a classification criteria for the offenders, returns for each year the number of offenders (who committed said offense) that fall into each category of the classification criteria.<br>
+   * This method encompasses state-wide data.<br>
+   * Additional information can be found under method getVictimsByNation<br>
    * @param  {String} stateAbbreviation State Abbreviation, two characters long
    * @param  {String} offense           The offense for which to find offenders.
    * @param  {String} classification    The classification criteria by which the offenders will be categorized.
@@ -267,9 +267,9 @@ class FBI_Wrapper {
   }
 
   /**
-   * Given a specific offense and a classification criteria for the offenders, returns for each year the number of offenders (who committed said offense) that fall into each category of the classification criteria.
-   * This method encompasses agency-wide data.
-   * Additional information can be found under method getVictimsByNation
+   * Given a specific offense and a classification criteria for the offenders, returns for each year the number of offenders (who committed said offense) that fall into each category of the classification criteria.<br>
+   * This method encompasses agency-wide data.<br>
+   * Additional information can be found under method getVictimsByNation<br>
    * @param  {String} ori            The ORI of the agency in question
    * @param  {String} offense        The offense for which to find offenders.
    * @param  {String} classification The classification criteria by which the offenders will be categorized.
@@ -283,10 +283,10 @@ class FBI_Wrapper {
   //Get crime frequency statistics
 
   /**
-   * Given a specific offense, returns for each year the number of incidents and (offense occurrences) that occurred involving that offense.
-   * Note that the difference between an incident and an offense is that within an incident, a person could have committed multiple offenses.
-   * This method encompasses nation-wide data.
-   * Additional information can be found under method getVictimsByNation
+   * Given a specific offense, returns for each year the number of incidents and (offense occurrences) that occurred involving that offense.<br>
+   * Note that the difference between an incident and an offense is that within an incident, a person could have committed multiple offenses.<br>
+   * This method encompasses nation-wide data.<br>
+   * Additional information can be found under method getVictimsByNation<br>
    * @param  {String} offense The offense for which to find the # of incidents and occurrences.
    * @return {Array}          Entries for each year containing the # of incidents and (offense occurrences) involving the given offense
    */
@@ -296,9 +296,9 @@ class FBI_Wrapper {
   }
 
   /**
-   * Given a specific offense, returns for each year the number of incidents and (offense occurrences) that occurred involving that offense.
-   * This method encompasses region-wide data.
-   * Additional information can be found under method getCrimeCountByNation
+   * Given a specific offense, returns for each year the number of incidents and (offense occurrences) that occurred involving that offense.<br>
+   * This method encompasses region-wide data.<br>
+   * Additional information can be found under method getCrimeCountByNation<br>
    * @param  {Number|String} regionName This region's numerical code. Note that this parameter can also be a String (the region's name).
    * @param  {String}        offense    The offense for which to find the # of incidents and occurrences.
    * @return {Array}                    Entries for each year containing the # of incidents and (offense occurrences) involving the given offense
@@ -312,9 +312,9 @@ class FBI_Wrapper {
   }
 
   /**
-   * Given a specific offense, returns for each year the number of incidents and (offense occurrences) that occurred involving that offense.
-   * This method encompasses state-wide data.
-   * Additional information can be found under method getCrimeCountByNation
+   * Given a specific offense, returns for each year the number of incidents and (offense occurrences) that occurred involving that offense.<br>
+   * This method encompasses state-wide data.<br>
+   * Additional information can be found under method getCrimeCountByNation<br>
    * @param  {String} stateAbbreviation State Abbreviation, two characters long
    * @param  {String} offense           The offense for which to find the # of incidents and occurrences.
    * @return {Array}                    Entries for each year containing the # of incidents and (offense occurrences) involving the given offense
@@ -325,9 +325,9 @@ class FBI_Wrapper {
   }
 
   /**
-   * Given a specific offense, returns for each year the number of incidents and (offense occurrences) that occurred involving that offense.
-   * This method encompasses agency-wide data.
-   * Additional information can be found under method getCrimeCountByNation
+   * Given a specific offense, returns for each year the number of incidents and (offense occurrences) that occurred involving that offense.<br>
+   * This method encompasses agency-wide data.<br>
+   * Additional information can be found under method getCrimeCountByNation<br>
    * @param  {String} ori     The ORI of the agency in question
    * @param  {String} offense The offense for which to find offenders.
    * @return {Array}          Entries for each year containing the # of incidents and (offense occurrences) involving the given offense
@@ -338,21 +338,56 @@ class FBI_Wrapper {
   }
 
   /**
-   * Get detailed statistics about the offenses committed within the jurisdiction of a particular agency.
-   * If no one type of offense is specified, then this method returns statistics about all types of offenses.
+   * Get detailed statistics about the offenses committed within the jurisdiction of a particular agency.<br>
+   * If no one type of offense is specified, then this method returns statistics about all types of offenses.<br>
+   * If looking for (a) specific offense(s), note that it is much faster to use getCrimeByOri or getMultipleCrimesByOri.<br>
    * @param  {String} ori                  The ORI of the agency in question
    * @param  {String} [offense="offenses"] The offense for which to find statistics. If no offense is specified, then get statistics about all offenses.
-   * @return {Array}                       Entries for each year containing detailed statistics about (each offense).
+   * @return {(Object|Array)}              Entries for each year containing detailed statistics about (each offense). If looking up a specific offense, returns an object. Otherwise, returns an array.
    */
   getCrimesByORI(ori, offense = "offenses") {
     return this.request.getCrimeSummary(ori, offense);
   }
 
+  /**
+   * Get detailed statistics about an offense committed within the jurisdiction of a particular agency.<br>
+   * Transmits more bandwidth, but is significantly faster (2.5x) than relying on the default API exposed by getCrimesByORI.<br>
+   * @param {String} ori     The ORI of the agency in question.
+   * @param {String} offense The offense for which to find statistics.
+   * @return {Array}         Entries for each year containing detailed statistics about the offense. Returns undefined if the ORI provided is not valid.
+   */
+  getCrimeByORI(ori, offense) {
+    return new Promise((resolve, reject) => {
+      this.getCrimesByORI(ori, "offenses").then((result) => {
+        if (typeof result == "undefined")
+          return resolve(undefined);
+
+        let crimes = [];
+        let lowercaseOffense = offense.toLowerCase();
+
+        for (let crime of result) {
+          if (crime.offense === lowercaseOffense)
+            crimes.push(crime);
+        }
+        resolve(crimes);
+      });
+    });
+  }
+
+   /**
+    * Get detailed statistics about multiple offenses committed within the jurisdiction of a particular agency.<br>
+    * Transmits more bandwidth, but is significantly faster (2.5x) than relying on the default API exposed by getCrimesByORI.<br>
+    * @param {String} ori     The ORI of the agency in question.
+    * @param {Array} offenses The offenses for which to find statistics.
+    * @return {Array}         Entries for each year containing detailed statistics about the offenses. Array of arrays, where an index into the returned array matches with that of the offenses array passsed in. Returns undefined if no information about the offenses is found, or undefined in the indice(s) where no information about that particular offense is found.
+    */
+  // getMultipleCrimesByOri
+
   //Get detailed arson statistics
 
   /**
-   * For each year, gets detailed statistics about arson, including the # of reports and estimated property damage.
-   * This method encompasses nation-wide data.
+   * For each year, gets detailed statistics about arson, including the # of reports and estimated property damage.<br>
+   * This method encompasses nation-wide data.<br>
    * @return {Array} Entries for each year detailing arson statistics
    */
   getDetailedArsonStatsByNation() {
@@ -361,9 +396,9 @@ class FBI_Wrapper {
   }
 
   /**
-   * For each year, gets detailed statistics about arson, including the # of reports and estimated property damage.
-   * Note that this method separates its statistics into states, providing individual arson statistics for each state within the region.
-   * This method encompasses region-wide data.
+   * For each year, gets detailed statistics about arson, including the # of reports and estimated property damage.<br>
+   * Note that this method separates its statistics into states, providing individual arson statistics for each state within the region.<br>
+   * This method encompasses region-wide data.<br>
    * @param  {Number|String} regionName This region's numerical code. Note that this parameter can also be a String (the region's name).
    * @return {Array}                    Entries for each year detailing arson statistics.
    */
@@ -376,8 +411,8 @@ class FBI_Wrapper {
   }
 
   /**
-   * For each year, gets detailed statistics about arson, including the # of reports and estimated property damage.
-   * This method encompasses state-wide data.
+   * For each year, gets detailed statistics about arson, including the # of reports and estimated property damage.<br>
+   * This method encompasses state-wide data.<br>
    * @param  {String} stateAbbreviation State Abbreviation, two characters long
    * @return {Array}                    Entries for each year detailing arson statistics.
    */
@@ -389,9 +424,9 @@ class FBI_Wrapper {
   //Get participation statistics (with UCR)
 
   /**
-   * For each year, returns the total number of agencies in the U.S in addition to what type of data they submit (SRS, NIBRS).
-   * SRS is the old hierarchical crime reporting system (Summary Reporting System) that only collects a limited range of data.
-   * NIBRS is the new system (National Incident-Based Reporting System) that allows for more extensive data collection (more crime categories).
+   * For each year, returns the total number of agencies in the U.S in addition to what type of data they submit (SRS, NIBRS).<br>
+   * SRS is the old hierarchical crime reporting system (Summary Reporting System) that only collects a limited range of data.<br>
+   * NIBRS is the new system (National Incident-Based Reporting System) that allows for more extensive data collection (more crime categories).<br>
    * @return {Array} Entries for each year detailing the number of agencies and how many collect what type of information
    */
   getParticipationByNation() {
@@ -400,7 +435,7 @@ class FBI_Wrapper {
   }
 
   /**
-   * For each year, returns the total number of agencies in the specified region in addition to what type of data they submit (SRS, NIBRS).
+   * For each year, returns the total number of agencies in the specified region in addition to what type of data they submit (SRS, NIBRS).<br>
    * @param  {Number|String} regionName This region's numerical code. Note that this parameter can also be a String (the region's name).
    * @return {Array}                    Entries for each year detailing the number of agencies and how many collect what type of information
    */
@@ -413,7 +448,7 @@ class FBI_Wrapper {
   }
 
   /**
-   * For each year, returns the total number of agencies in the specified state in addition to what type of data they submit (SRS, NIBRS).
+   * For each year, returns the total number of agencies in the specified state in addition to what type of data they submit (SRS, NIBRS).<br>
    * @param  {String} stateAbbreviation State Abbreviation, two characters long
    * @return {Array}                    Entries for each year detailing the number of agencies and how many collect what type of information
    */
@@ -423,7 +458,7 @@ class FBI_Wrapper {
   }
 
   /**
-   * For each year, returns the type of data that this specific agency has been reporting, in addition to other relevant data about the agency.
+   * For each year, returns the type of data that this specific agency has been reporting, in addition to other relevant data about the agency.<br>
    * @param  {String} ori The ORI of the agency in question
    * @return {Array}      Entries for each year detailing the number of agencies and how many collect what type of information
    */
@@ -435,8 +470,8 @@ class FBI_Wrapper {
   //Get crime estimates
 
   /**
-   * For each year, returns the estimated number of crimes (in different categories) that occurred.
-   * This method encompasses nation-wide data.
+   * For each year, returns the estimated number of crimes (in different categories) that occurred.<br>
+   * This method encompasses nation-wide data.<br>
    * @return {Array} Entries for each year detailing the estimated number of crimes that occurred.
    */
   getCrimeEstimatesByNation() {
@@ -445,9 +480,9 @@ class FBI_Wrapper {
   }
 
   /**
-   * For each year, returns the estimated number of crimes (in different categories) that occurred.
-   * Note that this method breaks down its statistics into states, providing estimates for each state within the region.
-   * This method encompasses region-wide data.
+   * For each year, returns the estimated number of crimes (in different categories) that occurred.<br>
+   * Note that this method breaks down its statistics into states, providing estimates for each state within the region.<br>
+   * This method encompasses region-wide data.<br>
    * @param  {Number|String} regionName This region's numerical code. Note that this parameter can also be a String (the region's name).
    * @return {Array}                    Entries for each year detailing the estimated number of crimes that occurred.
    */
@@ -460,8 +495,8 @@ class FBI_Wrapper {
   }
 
   /**
-   * For each year, returns the estimated number of crimes (in different categories) that occurred.
-   * This method encompasses state-wide data.
+   * For each year, returns the estimated number of crimes (in different categories) that occurred.<br>
+   * This method encompasses state-wide data.<br>
    * @param  {String} stateAbbreviation State Abbreviation, two characters long
    * @return {Array}                    Entries for each year detailing the estimated number of crimes that occurred.
    */
