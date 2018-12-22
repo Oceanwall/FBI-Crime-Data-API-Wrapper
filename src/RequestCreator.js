@@ -5,17 +5,15 @@ const BASE_URL = "https://api.usa.gov/crime/fbi/sapi/api/";
 
 class RequestCreator {
 
-  constructor(userAPIkey, strictErrorChecking) {
-    if (strictErrorChecking) {
-      if (typeof userAPIkey == "undefined" || typeof userAPIkey == "null") {
-        throw new Error(`${userAPIkey} does not exist.`);
-      }
+  constructor(userAPIkey) {
+    if (typeof userAPIkey == "undefined" || typeof userAPIkey == "null") {
+      throw new Error(`${userAPIkey} does not exist.`);
     }
 
     this.userAPIkey = `api_key=${userAPIkey}`;
-    this.checkErrors = strictErrorChecking;
   }
 
+  // Functions for checking and standardizing region identifiers.
   checkValidRegion(regionName) {
     if (typeof regionName == "number") {
       regionName = this.convertRegionNumberToRegionName(regionName);
@@ -67,17 +65,55 @@ class RequestCreator {
     }
   }
 
-  checkNumParameters(numPassedArguments, targetMethod) {
-    if (this.checkErrors) {
-      let numRequiredArguments = targetMethod.length;
-      let methodName = targetMethod.name;
+  // Haversine Distance formula, used for calculating great-circle distance (km)
+  // between two points on a sphere given their latitudes and longitudes.
+  haversineDistance(latitude1, longitude1, latitude2, longitude2) {
+    // Radius of Earth (in km)
+    let earthRadius = 6371;
+    let latitudeDifference = this.degreesToRadians(latitude2 - latitude1);
+    let longitudeDifference = this.degreesToRadians(longitude2 - longitude1);
 
-      if (numPassedArguments < numRequiredArguments) {
-        throw new Error(`Insufficent arguments were passed to method ${methodName}. ${numRequiredArguments} were expected, but only ${numPassedArguments} were passed.`);
-      }
-      else if (numPassedArguments > numRequiredArguments) {
-        throw new Error(`Too many arguments were passed to method ${methodName}. ${numRequiredArguments} were expected, but ${numPassedArguments} were passed.`);
-      }
+    let havTheta = Math.pow(Math.sin(latitudeDifference / 2), 2) +
+                   Math.cos(this.degreesToRadians(latitude1)) * Math.cos(this.degreesToRadians(latitude2)) *
+                   Math.pow(Math.sin(longitudeDifference / 2), 2);
+
+    let distance = 2 * earthRadius * Math.asin(Math.sqrt(havTheta));
+
+    // Distance in km
+    return distance;
+  }
+
+  degreesToRadians(degrees) {
+    return degrees * (Math.PI / 180);
+  }
+
+  checkValidRange(range) {
+    if (typeof range != "number")
+      throw new Error("Expected range to be number, received: " + typeof range);
+    if (range < 0)
+      throw new Error("Range cannot be negative");
+  }
+
+  checkValidCoordinates(latitude, longitude) {
+    if (typeof latitude != "number")
+      throw new Error("Expected latitude to be number, received: " + typeof latitude);
+    if (typeof longitude != "number")
+      throw new Error("Expected longitude to be number, received: " + typeof longitude);
+    if (Math.abs(latitude) > 85.05115)
+      throw new Error("Latitude beyond valid range");
+    if (Math.abs(longitude) > 180)
+      throw new Error("Longitude beyond valid range");
+  }
+
+  checkNumParameters(numPassedArguments, targetMethod) {
+    let numRequiredArguments = targetMethod.length;
+    let methodName = targetMethod.name;
+
+    if (numPassedArguments < numRequiredArguments) {
+      throw new Error(`Insufficent arguments were passed to method ${methodName}. ${numRequiredArguments} were expected, but only ${numPassedArguments} were passed.`);
+    }
+    else if (numPassedArguments > numRequiredArguments) {
+      throw new Error(`Too many arguments were passed to method ${methodName}. ${numRequiredArguments} were expected, but ${numPassedArguments} were passed.`);
     }
   }
 
@@ -184,7 +220,6 @@ class RequestCreator {
       })
     });
   }
-
 
 }
 

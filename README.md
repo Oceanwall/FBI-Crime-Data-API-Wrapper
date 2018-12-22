@@ -71,6 +71,11 @@ getMultipleCrimesByOri
 getAgenciesByRegion
 getAgenciesByCoordinates
 getStatesByRegion
+
+NOTE: removed error handling toggling (REMOVE potential for USER ERROR, WE OPINIONATED NOW BOYS)
+TODO: remove erros from fbi wrapper area?
+
+parameter checking for stuff with default-params?
 -->
 
 ## API_DOCUMENTATION

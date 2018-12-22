@@ -31,11 +31,10 @@ class FBI_Wrapper {
 
   /**
    * Creates a new FBI_Wrapper object, which is used to more easily access the FBI UCR API.<br>
-   * @param {String}  userAPIkey                 The api.data.gov API key, which is required to access the FBI UCR API. API Keys can be generated here: https://api.data.gov/signup/
-   * @param {Boolean} [strictErrorChecking=true] Indicates whether or not the wrapper should check for potential errors, such as a mismatch in the number of parameters passed to a method.
+   * @param {String} userAPIkey The api.data.gov API key, which is required to access the FBI UCR API. API Keys can be generated here: https://api.data.gov/signup/
    */
-  constructor(userAPIkey, strictErrorChecking = true) {
-    this.request = new RequestCreator(userAPIkey, strictErrorChecking);
+  constructor(userAPIkey) {
+    this.request = new RequestCreator(userAPIkey);
   }
 
   //Get agencies
@@ -48,6 +47,36 @@ class FBI_Wrapper {
   getAgencies() {
     this.request.checkNumParameters(arguments.length, this.getAgencies);
     return this.request.getAgencies();
+  }
+
+  /**
+   * Gets information about all the agencies within *range* kilometers of the provided coordinates.
+   * @param {Number} latitude   Desired latitude to center agency search around.
+   * @param {Number} longitude  Desired longitude to center agency search around.
+   * @param {Number} [range=50] Length (km) of circular radius in which to find agencies.
+   * @return {Array}            Information about all the agencies within *range* kilometers of the provided coordinates
+   */
+  getAgenciesByCoordinates(latitude, longitude, range = 50) {
+    this.request.checkValidRange(range);
+    this.request.checkValidCoordinates(latitude, longitude);
+
+    return new Promise((resolve, reject) => {
+      this.request.getAgencies().then((result) => {
+        if (typeof result == "undefined")
+          return resolve(undefined);
+
+        let agencies = [];
+        for (let stateName of Object.getOwnPropertyNames(result)) {
+          let state = result[stateName];
+          for (let agency of Object.getOwnPropertyNames(state)) {
+            if (this.request.haversineDistance(latitude, longitude, state[agency].latitude, state[agency].longitude) <= range)
+              agencies.push(state[agency]);
+          }
+        }
+
+        resolve(agencies);
+      });
+    });
   }
 
   /**
@@ -73,17 +102,13 @@ class FBI_Wrapper {
           let state = result[stateName];
           for (let agency of Object.getOwnPropertyNames(state)) {
             if (allRegions || state[agency].region_name == regionName)
-              agencies.push(agency);
+              agencies.push(state[agency]);
           }
         }
 
         resolve(agencies);
       });
     });
-  }
-
-  getAgenciesByCoordinates() {
-
   }
 
   /**
