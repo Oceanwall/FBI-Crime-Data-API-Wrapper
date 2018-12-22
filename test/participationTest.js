@@ -12,17 +12,17 @@ describe("FBI UCR Wrapper, Agency Data Reporting Participation Information Calls
     expect(information).to.be.an('array');
   });
 
-  it("should get agency data reporting participation statistics (nation-wide)", async function() {
+  it("should get agency data reporting participation statistics (region-wide)", async function() {
     var information = await wrapper.getParticipationByRegion("West");
     expect(information).to.be.an('array');
   });
 
-  it("should get agency data reporting participation statistics (nation-wide)", async function() {
+  it("should get agency data reporting participation statistics (state-wide)", async function() {
     var information = await wrapper.getParticipationByState("TX");
     expect(information).to.be.an('array');
   });
 
-  it("should get agency data reporting participation statistics (nation-wide)", async function() {
+  it("should get agency data reporting participation statistics (agency-wide)", async function() {
     var information = await wrapper.getParticipationByORI("MN0480400");
     expect(information).to.be.an('array');
   });

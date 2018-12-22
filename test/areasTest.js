@@ -23,7 +23,7 @@ describe("FBI UCR Wrapper, Area Information Calls", function() {
   });
 
   it("should get information about a specfic region", async function() {
-    var information = await wrapper.getRegionsByName("East");
+    var information = await wrapper.getRegionsByName("Midwest");
     expect(information).to.be.an('object');
   });
 

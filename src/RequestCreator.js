@@ -16,30 +16,58 @@ class RequestCreator {
     this.checkErrors = strictErrorChecking;
   }
 
+  checkValidRegion(regionName) {
+    if (typeof regionName == "number") {
+      regionName = this.convertRegionNumberToRegionName(regionName);
+      return regionName;
+    }
+    else if (typeof regionName == "string") {
+      regionName = this.standardizeRegionName(regionName);
+      return regionName;
+    }
+    else
+      throw new Error("Expected regionName parameter to be number or string, received: " + typeof regionName);
+  }
+
   convertRegionNumberToRegionName(regionNumber) {
     switch(regionNumber) {
       case(0):
         return "U.S. Territories";
-        break;
       case(1):
         return "Northeast";
-        break;
       case(2):
         return "Midwest";
-        break;
       case(3):
         return "South";
-        break;
       case(4):
         return "West";
-        break;
       case(99):
         return "Other";
-        break;
+      default:
+        throw new Error("Provided region number is invalid. Expected 0-4 or 99, received: " + regionNumber);
     }
   }
 
-  checkParameters(numPassedArguments, targetMethod) {
+  standardizeRegionName(regionName) {
+    switch(regionName.toLowerCase()) {
+      case("u.s. territories"):
+        return "U.S. Territories";
+      case("northwest"):
+        return "Northeast";
+      case("midwest"):
+        return "Midwest";
+      case("south"):
+        return "South";
+      case("west"):
+        return "West";
+      case("other"):
+        return "Other";
+      default:
+        throw new Error("Provided region name is invalid. Received: " + regionName);
+    }
+  }
+
+  checkNumParameters(numPassedArguments, targetMethod) {
     if (this.checkErrors) {
       let numRequiredArguments = targetMethod.length;
       let methodName = targetMethod.name;

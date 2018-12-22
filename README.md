@@ -59,7 +59,18 @@ TODO LIST:
 ( ) Write examples for all methods
 ( ) Write test cases for all methods
 ( ) Error checking for all methods (check parameters? ensure correct typing?)
+( ) TODO ^ Abstract out into error checking function?
 ( ) Error checking test cases for all methods
+( ) TODO (?) Create generic object flattening function?
+( ) Mention known bug (dataset server down, not returning info)
+
+New custom methods include:
+
+getCrimeByORI
+getMultipleCrimesByOri
+getAgenciesByRegion
+getAgenciesByCoordinates
+getStatesByRegion
 -->
 
 ## API_DOCUMENTATION

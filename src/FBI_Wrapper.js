@@ -42,11 +42,48 @@ class FBI_Wrapper {
 
   /**
    * Gets information about all agencies in the United States.<br>
+   * If desiring to get information about all agencies in the U.S in an array form, consider using getAgenciesByRegion and passing in the "U.S" territories parameter.<br>
    * @return {Object} Information about each agency in the U.S, subdivided into states that are further subdivided into agency objects (identified by their ORI-9 (Department Originating Agency Identifier Number, character length 9)).
    */
   getAgencies() {
-    this.request.checkParameters(arguments.length, this.getAgencies);
+    this.request.checkNumParameters(arguments.length, this.getAgencies);
     return this.request.getAgencies();
+  }
+
+  /**
+   * Gets information about all agencies in a specific region.<br>
+   * Permitted region numerical codes are 0, 1, 2, 3, 4, 99<br>
+   * Permitted region string names are "U.S. Territories", "Northeast", "Midwest", "South", "West", "Other".<br>
+   * @param  {Number|String} regionName This region's numerical code. Note that this parameter can also be a String (the region's name).
+   * @return {Array}                    Information about all the agencies in that specific region. Undefined if a bad region name is provided.
+   */
+  getAgenciesByRegion(regionName) {
+    this.request.checkNumParameters(arguments.length, this.getAgenciesByRegion);
+    regionName = this.request.checkValidRegion(regionName);
+
+    let allRegions = regionName == "U.S. Territories";
+
+    return new Promise((resolve, reject) => {
+      this.request.getAgencies().then((result) => {
+        if (typeof result == "undefined")
+          return resolve(undefined);
+
+        let agencies = [];
+        for (let stateName of Object.getOwnPropertyNames(result)) {
+          let state = result[stateName];
+          for (let agency of Object.getOwnPropertyNames(state)) {
+            if (allRegions || state[agency].region_name == regionName)
+              agencies.push(agency);
+          }
+        }
+
+        resolve(agencies);
+      });
+    });
+  }
+
+  getAgenciesByCoordinates() {
+
   }
 
   /**
@@ -80,13 +117,17 @@ class FBI_Wrapper {
     return this.request.getStates("", pageNumber);
   }
 
+  getStatesByRegion() {
+
+  }
+
   /**
    * Gets identifying information about a specific state based on its abbreviation.<br>
    * @param  {String} stateAbbreviation State abbreviation (two characters long, like TX).
    * @return {Object}                   Identifying information about that state.
    */
   getStateByAbbreviation(stateAbbreviation) {
-    this.request.checkParameters(arguments.length, this.getStateByAbbreviation);
+    this.request.checkNumParameters(arguments.length, this.getStateByAbbreviation);
     return this.request.getStates(stateAbbreviation);
   }
 
@@ -97,7 +138,7 @@ class FBI_Wrapper {
    * @return {Array} Information about all regions in the U.S
    */
   getRegions() {
-    this.request.checkParameters(arguments.length, this.getRegions);
+    this.request.checkNumParameters(arguments.length, this.getRegions);
     return this.request.getRegions();
   }
 
@@ -107,10 +148,8 @@ class FBI_Wrapper {
    * @return {Object}                   Information about that specific region.
    */
   getRegionsByName(regionName) {
-    this.request.checkParameters(arguments.length, this.getRegionsByName);
-    if (typeof regionName == "number") {
-      regionName = this.request.convertRegionNumberToRegionName(regionName);
-    }
+    this.request.checkNumParameters(arguments.length, this.getRegionsByName);
+    regionName = this.request.checkValidRegion(regionName);
     return this.request.getRegions(regionName);
   }
 
@@ -121,7 +160,7 @@ class FBI_Wrapper {
    * @return {Array} Nationwide police employment statistics for each year
    */
   getPoliceByNation() {
-    this.request.checkParameters(arguments.length, this.getPoliceByNation);
+    this.request.checkNumParameters(arguments.length, this.getPoliceByNation);
     return this.request.getPoliceEmployment();
   }
 
@@ -131,10 +170,8 @@ class FBI_Wrapper {
    * @return {Array}                    Regionwide police employment statistics for each year
    */
   getPoliceByRegion(regionName) {
-    this.request.checkParameters(arguments.length, this.getPoliceByRegion);
-    if (typeof regionName == "number") {
-      regionName = this.request.convertRegionNumberToRegionName(regionName);
-    }
+    this.request.checkNumParameters(arguments.length, this.getPoliceByRegion);
+    regionName = this.request.checkValidRegion(regionName);
     return this.request.getPoliceEmployment(REGIONAL_SCOPE, regionName);
   }
 
@@ -144,7 +181,7 @@ class FBI_Wrapper {
    * @return {Array}                    Statewide police employment statistics for each year
    */
   getPoliceByState(stateAbbreviation) {
-    this.request.checkParameters(arguments.length, this.getPoliceByState);
+    this.request.checkNumParameters(arguments.length, this.getPoliceByState);
     return this.request.getPoliceEmployment(STATE_SCOPE, stateAbbreviation);
   }
 
@@ -154,7 +191,7 @@ class FBI_Wrapper {
    * @return {Array}      Agency police employment statistics for each year, in addition to other details about the agency (such as the population that year of the served area).
    */
   getPoliceByORI(ori) {
-    this.request.checkParameters(arguments.length, this.getPoliceByORI);
+    this.request.checkNumParameters(arguments.length, this.getPoliceByORI);
     return this.request.getPoliceEmployment(ORI_SCOPE, ori);
   }
 
@@ -171,7 +208,7 @@ class FBI_Wrapper {
    * @return {Object}                Entries for each year containing the # of (nation-wide victims of the given offense) in each category type.
    */
   getVictimsByNation(offense, classification) {
-    this.request.checkParameters(arguments.length, this.getVictimsByNation);
+    this.request.checkNumParameters(arguments.length, this.getVictimsByNation);
     return this.request.getParticipants("victim", NATIONAL_SCOPE, offense, classification);
   }
 
@@ -185,10 +222,8 @@ class FBI_Wrapper {
    * @return {Object}                       Entries for each year containing the # of (region-wide victims of the given offense) in each category type.
    */
   getVictimsByRegion(regionName, offense, classification) {
-    this.request.checkParameters(arguments.length, this.getVictimsByRegion);
-    if (typeof regionName == "number") {
-      regionName = this.request.convertRegionNumberToRegionName(regionName);
-    }
+    this.request.checkNumParameters(arguments.length, this.getVictimsByRegion);
+    regionName = this.request.checkValidRegion(regionName);
     return this.request.getParticipants("victim", REGIONAL_SCOPE, offense, classification, regionName);
   }
 
@@ -202,7 +237,7 @@ class FBI_Wrapper {
    * @return {Object}                   Entries for each year containing the # of (state-wide victims of the given offense) in each category type.
    */
   getVictimsByState(stateAbbreviation, offense, classification) {
-    this.request.checkParameters(arguments.length, this.getVictimsByState);
+    this.request.checkNumParameters(arguments.length, this.getVictimsByState);
     return this.request.getParticipants("victim", STATE_SCOPE, offense, classification, stateAbbreviation)
   }
 
@@ -216,7 +251,7 @@ class FBI_Wrapper {
    * @return {Object}                Entries for each year containing the # of (agency-wide victims of the given offense) in each category type.
    */
   getVictimsByORI(ori, offense, classification) {
-    this.request.checkParameters(arguments.length, this.getVictimsByORI);
+    this.request.checkNumParameters(arguments.length, this.getVictimsByORI);
     return this.request.getParticipants("victim", ORI_SCOPE, offense, classification, ori);
   }
 
@@ -231,7 +266,7 @@ class FBI_Wrapper {
    * @return {Object}                Entries for each year containing the # of (nation-wide offenders who committed the given offense) in each category type.
    */
   getOffendersByNation(offense, classification) {
-    this.request.checkParameters(arguments.length, this.getOffendersByNation);
+    this.request.checkNumParameters(arguments.length, this.getOffendersByNation);
     return this.request.getParticipants("offender", NATIONAL_SCOPE, offense, classification);
   }
 
@@ -245,10 +280,8 @@ class FBI_Wrapper {
    * @return {Object}                       Entries for each year containing the # of (region-wide offenders who committed the given offense) in each category type.
    */
   getOffendersByRegion(regionName, offense, classification) {
-    this.request.checkParameters(arguments.length, this.getOffendersByRegion);
-    if (typeof regionName == "number") {
-      regionName = this.request.convertRegionNumberToRegionName(regionName);
-    }
+    this.request.checkNumParameters(arguments.length, this.getOffendersByRegion);
+    regionName = this.request.checkValidRegion(regionName);
     return this.request.getParticipants("offender", REGIONAL_SCOPE, offense, classification, regionName);
   }
 
@@ -262,7 +295,7 @@ class FBI_Wrapper {
    * @return {Object}                   Entries for each year containing the # of (state-wide offenders who committed the given offense) in each category type.
    */
   getOffendersByState(stateAbbreviation, offense, classification) {
-    this.request.checkParameters(arguments.length, this.getOffendersByState);
+    this.request.checkNumParameters(arguments.length, this.getOffendersByState);
     return this.request.getParticipants("offender", STATE_SCOPE, offense, classification, stateAbbreviation)
   }
 
@@ -276,7 +309,7 @@ class FBI_Wrapper {
    * @return {Object}                Entries for each year containing the # of (agency-wide offenders who committed the given offense) in each category type.
    */
   getOffendersByORI(ori, offense, classification) {
-    this.request.checkParameters(arguments.length, this.getOffendersByORI);
+    this.request.checkNumParameters(arguments.length, this.getOffendersByORI);
     return this.request.getParticipants("offender", ORI_SCOPE, offense, classification, ori);
   }
 
@@ -291,7 +324,7 @@ class FBI_Wrapper {
    * @return {Array}          Entries for each year containing the # of incidents and (offense occurrences) involving the given offense
    */
   getCrimeCountByNation(offense) {
-    this.request.checkParameters(arguments.length, this.getCrimeCountByNation);
+    this.request.checkNumParameters(arguments.length, this.getCrimeCountByNation);
     return this.request.getCrimeCount(NATIONAL_SCOPE, offense);
   }
 
@@ -304,10 +337,8 @@ class FBI_Wrapper {
    * @return {Array}                    Entries for each year containing the # of incidents and (offense occurrences) involving the given offense
    */
   getCrimeCountByRegion(regionName, offense) {
-    this.request.checkParameters(arguments.length, this.getCrimeCountByRegion);
-    if (typeof regionName == "number") {
-      regionName = this.request.convertRegionNumberToRegionName(regionName);
-    }
+    this.request.checkNumParameters(arguments.length, this.getCrimeCountByRegion);
+    regionName = this.request.checkValidRegion(regionName);
     return this.request.getCrimeCount(REGIONAL_SCOPE, offense, regionName);
   }
 
@@ -320,7 +351,7 @@ class FBI_Wrapper {
    * @return {Array}                    Entries for each year containing the # of incidents and (offense occurrences) involving the given offense
    */
   getCrimeCountByState(stateAbbreviation, offense) {
-    this.request.checkParameters(arguments.length, this.getCrimeCountByState);
+    this.request.checkNumParameters(arguments.length, this.getCrimeCountByState);
     return this.request.getCrimeCount(STATE_SCOPE, offense, stateAbbreviation);
   }
 
@@ -333,7 +364,7 @@ class FBI_Wrapper {
    * @return {Array}          Entries for each year containing the # of incidents and (offense occurrences) involving the given offense
    */
   getCrimeCountByORI(ori, offense) {
-    this.request.checkParameters(arguments.length, this.getCrimeCountByORI);
+    this.request.checkNumParameters(arguments.length, this.getCrimeCountByORI);
     return this.request.getCrimeCount(ORI_SCOPE, offense, ori);
   }
 
@@ -357,6 +388,10 @@ class FBI_Wrapper {
    * @return {Array}         Entries for each year containing detailed statistics about the offense. Returns undefined if the ORI provided is not valid.
    */
   getCrimeByORI(ori, offense) {
+    this.request.checkNumParameters(arguments.length, this.getCrimeByORI);
+    if (typeof offense != "string")
+      throw new Error("Failed expectation: Argument 'offense' must be a string");
+
     return new Promise((resolve, reject) => {
       this.getCrimesByORI(ori, "offenses").then((result) => {
         if (typeof result == "undefined")
@@ -379,9 +414,41 @@ class FBI_Wrapper {
     * Transmits more bandwidth, but is significantly faster (2.5x) than relying on the default API exposed by getCrimesByORI.<br>
     * @param {String} ori     The ORI of the agency in question.
     * @param {Array} offenses The offenses for which to find statistics.
-    * @return {Array}         Entries for each year containing detailed statistics about the offenses. Array of arrays, where an index into the returned array matches with that of the offenses array passsed in. Returns undefined if no information about the offenses is found, or undefined in the indice(s) where no information about that particular offense is found.
+    * @return {Array}         Entries for each year containing detailed statistics about the offenses. Array of arrays, where an index into the returned array matches with that of the offenses array passsed in. Returns undefined if the ORI provided is not valid.
     */
-  // getMultipleCrimesByOri
+    getMultipleCrimesByOri(ori, offenses) {
+      this.request.checkNumParameters(arguments.length, this.getMultipleCrimesByOri);
+      if (!Array.isArray(offenses))
+        throw new Error("Failed expectation: Argument 'offenses' must be an array");
+
+      if (offenses.length == 0)
+        return [];
+
+      return new Promise((resolve, reject) => {
+        this.getCrimesByORI(ori, "offenses").then((result) => {
+          if (typeof result == "undefined")
+            return resolve(undefined);
+
+          let crimes = [];
+          let lowercaseOffenses = [];
+          for (let offense of offenses) {
+            crimes.push([]);
+            lowercaseOffenses.push(offense.toLowerCase());
+          }
+
+          for (let crime of result) {
+            for (let i = 0; i < lowercaseOffenses.length; i++) {
+              if (crime.offense == lowercaseOffenses[i]) {
+                crimes[i].push(crime);
+                break;
+              }
+            }
+          }
+
+          resolve(crimes);
+        });
+      });
+    }
 
   //Get detailed arson statistics
 
@@ -391,7 +458,7 @@ class FBI_Wrapper {
    * @return {Array} Entries for each year detailing arson statistics
    */
   getDetailedArsonStatsByNation() {
-    this.request.checkParameters(arguments.length, this.getDetailedArsonStatsByNation);
+    this.request.checkNumParameters(arguments.length, this.getDetailedArsonStatsByNation);
     return this.request.getArsonStats(NATIONAL_SCOPE);
   }
 
@@ -403,10 +470,8 @@ class FBI_Wrapper {
    * @return {Array}                    Entries for each year detailing arson statistics.
    */
   getDetailedArsonStatsByRegion(regionName) {
-    this.request.checkParameters(arguments.length, this.getDetailedArsonStatsByRegion);
-    if (typeof regionName == "number") {
-      regionName = this.request.convertRegionNumberToRegionName(regionName);
-    }
+    this.request.checkNumParameters(arguments.length, this.getDetailedArsonStatsByRegion);
+    regionName = this.request.checkValidRegion(regionName);
     return this.request.getArsonStats(REGIONAL_SCOPE, regionName);
   }
 
@@ -417,7 +482,7 @@ class FBI_Wrapper {
    * @return {Array}                    Entries for each year detailing arson statistics.
    */
   getDetailedArsonStatsByState(stateAbbreviation) {
-    this.request.checkParameters(arguments.length, this.getDetailedArsonStatsByState);
+    this.request.checkNumParameters(arguments.length, this.getDetailedArsonStatsByState);
     return this.request.getArsonStats(STATE_SCOPE, stateAbbreviation);
   }
 
@@ -430,7 +495,7 @@ class FBI_Wrapper {
    * @return {Array} Entries for each year detailing the number of agencies and how many collect what type of information
    */
   getParticipationByNation() {
-    this.request.checkParameters(arguments.length, this.getParticipationByNation);
+    this.request.checkNumParameters(arguments.length, this.getParticipationByNation);
     return this.request.getAgencyParticipation(NATIONAL_SCOPE);
   }
 
@@ -440,10 +505,8 @@ class FBI_Wrapper {
    * @return {Array}                    Entries for each year detailing the number of agencies and how many collect what type of information
    */
   getParticipationByRegion(regionName) {
-    this.request.checkParameters(arguments.length, this.getParticipationByRegion);
-    if (typeof regionName == "number") {
-      regionName = this.request.convertRegionNumberToRegionName(regionName);
-    }
+    this.request.checkNumParameters(arguments.length, this.getParticipationByRegion);
+    regionName = this.request.checkValidRegion(regionName);
     return this.request.getAgencyParticipation(REGIONAL_SCOPE, regionName);
   }
 
@@ -453,7 +516,7 @@ class FBI_Wrapper {
    * @return {Array}                    Entries for each year detailing the number of agencies and how many collect what type of information
    */
   getParticipationByState(stateAbbreviation) {
-    this.request.checkParameters(arguments.length, this.getParticipationByState);
+    this.request.checkNumParameters(arguments.length, this.getParticipationByState);
     return this.request.getAgencyParticipation(STATE_SCOPE, stateAbbreviation);
   }
 
@@ -463,7 +526,7 @@ class FBI_Wrapper {
    * @return {Array}      Entries for each year detailing the number of agencies and how many collect what type of information
    */
   getParticipationByORI(ori) {
-    this.request.checkParameters(arguments.length, this.getParticipationByORI);
+    this.request.checkNumParameters(arguments.length, this.getParticipationByORI);
     return this.request.getAgencyParticipation(ORI_SCOPE, ori)
   }
 
@@ -475,7 +538,7 @@ class FBI_Wrapper {
    * @return {Array} Entries for each year detailing the estimated number of crimes that occurred.
    */
   getCrimeEstimatesByNation() {
-    this.request.checkParameters(arguments.length, this.getCrimeEstimatesByNation);
+    this.request.checkNumParameters(arguments.length, this.getCrimeEstimatesByNation);
     return this.request.getEstimates(NATIONAL_SCOPE);
   }
 
@@ -487,10 +550,8 @@ class FBI_Wrapper {
    * @return {Array}                    Entries for each year detailing the estimated number of crimes that occurred.
    */
   getCrimeEstimatesByRegion(regionName) {
-    this.request.checkParameters(arguments.length, this.getCrimeEstimatesByRegion);
-    if (typeof regionName == "number") {
-      regionName = this.request.convertRegionNumberToRegionName(regionName);
-    }
+    this.request.checkNumParameters(arguments.length, this.getCrimeEstimatesByRegion);
+    regionName = this.request.checkValidRegion(regionName);
     return this.request.getEstimates(REGIONAL_SCOPE, regionName);
   }
 
@@ -501,7 +562,7 @@ class FBI_Wrapper {
    * @return {Array}                    Entries for each year detailing the estimated number of crimes that occurred.
    */
   getCrimeEstimatesByState(stateAbbreviation) {
-    this.request.checkParameters(arguments.length, this.getCrimeEstimatesByState);
+    this.request.checkNumParameters(arguments.length, this.getCrimeEstimatesByState);
     return this.request.getEstimates(STATE_SCOPE, stateAbbreviation);
   }
 
