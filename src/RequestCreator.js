@@ -5,10 +5,13 @@ const BASE_URL = "https://api.usa.gov/crime/fbi/sapi/api/";
 
 class RequestCreator {
 
-  constructor(userAPIkey) {
+  constructor(userAPIkey, strictErrorChecking) {
     if (typeof userAPIkey == "undefined" || typeof userAPIkey == "null") {
       throw new Error(`${userAPIkey} does not exist.`);
     }
+
+    if (!strictErrorChecking)
+      console.warn("Disabling strict error checking is now deprecated.");
 
     this.userAPIkey = `api_key=${userAPIkey}`;
   }
@@ -41,6 +44,25 @@ class RequestCreator {
         return "West";
       case(99):
         return "Other";
+      default:
+        throw new Error("Provided region number is invalid. Expected 0-4 or 99, received: " + regionNumber);
+    }
+  }
+
+  convertRegionNameToRegionNumber(regionName) {
+    switch(regionName) {
+      case("U.S. Territories"):
+        return 0;
+      case("Northeast"):
+        return 1;
+      case("Midwest"):
+        return 2;
+      case("South"):
+        return 3;
+      case("West"):
+        return 4;
+      case("Other"):
+        return 99;
       default:
         throw new Error("Provided region number is invalid. Expected 0-4 or 99, received: " + regionNumber);
     }

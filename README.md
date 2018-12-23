@@ -52,16 +52,13 @@ TODO LIST:
 (x) Complete all default methods
 (x) Document all default methods
 (x) Change return types (from Promise -> Object to Promise -> Array for that which can be isolated)
-(x) Write examples for default methods
 (x) Write test cases for all default methods
 ( ) Come up with extra methods that extend functionality
 ( ) Document all methods
-( ) Write examples for all methods
 ( ) Write test cases for all methods
 ( ) Error checking for all methods (check parameters? ensure correct typing?)
 ( ) TODO ^ Abstract out into error checking function?
 ( ) Error checking test cases for all methods
-( ) TODO (?) Create generic object flattening function?
 ( ) Mention known bug (dataset server down, not returning info)
 
 New custom methods include:
@@ -70,6 +67,7 @@ getCrimeByORI
 getMultipleCrimesByOri
 getAgenciesByRegion
 getAgenciesByCoordinates
+getAllStates
 getStatesByRegion
 
 NOTE: removed error handling toggling (REMOVE potential for USER ERROR, WE OPINIONATED NOW BOYS)

@@ -32,9 +32,10 @@ class FBI_Wrapper {
   /**
    * Creates a new FBI_Wrapper object, which is used to more easily access the FBI UCR API.<br>
    * @param {String} userAPIkey The api.data.gov API key, which is required to access the FBI UCR API. API Keys can be generated here: https://api.data.gov/signup/
+   * @param {Boolean} [strictErrorChecking=true] NOW DEPRECATED, DO NOT USE. Disabled error checking by the wrapper.
    */
-  constructor(userAPIkey) {
-    this.request = new RequestCreator(userAPIkey);
+  constructor(userAPIkey, strictErrorChecking = true) {
+    this.request = new RequestCreator(userAPIkey, strictErrorChecking);
   }
 
   //Get agencies
@@ -135,6 +136,7 @@ class FBI_Wrapper {
 
   /**
    * Gets identifying information about all the states in the U.S, such as their ID, abbreviation, and region.<br>
+   * Expressed in separate pages (20 results per page). If desiring all states at once, use getAllStates()<br>
    * @param  {Number} [pageNumber=0] Denotes a specific page of results to view, as indicated by the pagination property/object. Each call only returns 20 states at a time.
    * @return {Object}                Information about (20) states.
    */
@@ -142,8 +144,63 @@ class FBI_Wrapper {
     return this.request.getStates("", pageNumber);
   }
 
-  getStatesByRegion() {
+  /**
+   * Gets identifying information about all the states in the U.S, such as their ID, abbreviation, and region<br>
+   * @return {Array} Information about all US states.
+   */
+  getAllStates() {
+    this.request.checkNumParameters(arguments.length, this.getAllStates);
 
+    return new Promise((resolve, reject) => {
+      // Makes the first request, and then uses the pagination property to make remaining requests.
+      // Editable (hardcode X # of requests, or simply store all state objects) for efficiency, but less extendability.
+      this.getStates().then((states0) => {
+        let states = [];
+        let remainingRequests = [];
+        for (let i = 1; i < states0.pagination.pages; i++) {
+          remainingRequests.push(this.getStates(i));
+        }
+
+        Promise.all(remainingRequests).then((remainingStates) => {
+          // Add all states from first page.
+          for (let state of states0.results)
+            states.push(state);
+
+          for (let page of remainingStates) {
+            for (let state of page.results) {
+              states.push(state);
+            }
+          }
+
+          resolve(states);
+        });
+      });
+    });
+  }
+
+  /**
+   * Gets identifying information about all states in a specified region<br>
+   * @param  {Number|String} regionName This region's numerical code. Note that this parameter can also be a String (the region's name).
+   * @return {Array}                    Information about all states in that region.
+   */
+  getStatesByRegion(regionName) {
+    this.request.checkNumParameters(arguments.length, this.getStatesByRegion);
+    regionName = this.request.convertRegionNameToRegionNumber(this.request.checkValidRegion(regionName));
+
+    return new Promise((resolve, reject) => {
+      this.getAllStates().then((result) => {
+        if (typeof result == "undefined")
+          return resolve(undefined);
+
+        let regionStates = [];
+        for (let state of result) {
+          if (state.region_code == regionName)
+            regionStates.push(state);
+        }
+
+        resolve(regionStates);
+      });
+    });
   }
 
   /**
