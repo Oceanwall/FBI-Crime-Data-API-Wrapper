@@ -70,10 +70,13 @@ getAgenciesByCoordinates
 getAllStates
 getStatesByRegion
 
-NOTE: removed error handling toggling (REMOVE potential for USER ERROR, WE OPINIONATED NOW BOYS)
-TODO: remove erros from fbi wrapper area?
+get information by year range? (victims, offenders, crime statistics)
+possibly take state ids (in addition to abbreviations?)
 
-parameter checking for stuff with default-params?
+there has got to be a better way to do the error handler smh
+
+NOTE: removed error handling toggling (REMOVE potential for USER ERROR, WE OPINIONATED NOW BOYS)
+TODO: remove errors from fbi wrapper area?
 -->
 
 ## API_DOCUMENTATION

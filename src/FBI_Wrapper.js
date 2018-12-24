@@ -1,24 +1,8 @@
 const RequestCreator = require("./RequestCreator");
 
-//NOTE: General parameter layouts: relevantInformation, offenseInformation, classificationInformation, pageNumber
-//NOTE: Page Number is an optional parameter
-//NOTE: Method layout is as follows (Larger Scope -> Smaller Scope)
-/* Constructor,
-   get agencies,
-   get states,
-   get regions,
-   get police employment,
-   get victims,
-   get offenders,
-   get crime frequencies,
-   get detailed crime stats (ORI and arson only),
-   get UCR participation,
-   get crime estimates
-*/
-
-//TODO: Add custom functionalities?
-//TODO: Maybe add checks to see if parameter types are correct? (numbers, etc) (avoid undefineds, etc)
-
+// NOTE: General parameter layouts: relevantInformation, offenseInformation, classificationInformation, pageNumber
+// NOTE: Page Number is an optional parameter
+// NOTE: Method layout is as follows (Larger Scope -> Smaller Scope)
 
 /* ALL METHODS RETURN PROMISES, THE RETURN TYPES ARE AFTER THE PROMISES HAVE BEEN RESOLVED */
 
@@ -119,6 +103,9 @@ class FBI_Wrapper {
    * @return {Object}                   Information about each agency in a given state.
    */
   getAgenciesByState(stateAbbreviation, pageNumber = 0) {
+    this.request.checkTypeParameter(stateAbbreviation, "string", "stateAbbreviation");
+    this.request.checkTypeParameter(pageNumber, "number", "pageNumber");
+
     return this.request.getAgencies("state", stateAbbreviation, pageNumber);
   }
 
@@ -129,6 +116,8 @@ class FBI_Wrapper {
    * @return {Object}          Information about the desired agency, or if no ORI is provided, information about each agency in the U.S.
    */
   getAgencyByORI(ori = "") {
+    this.request.checkTypeParameter(ori, "string", "ori");
+
     return this.request.getAgencies("ori", ori);
   }
 
@@ -141,6 +130,8 @@ class FBI_Wrapper {
    * @return {Object}                Information about (20) states.
    */
   getStates(pageNumber = 0) {
+    this.request.checkTypeParameter(pageNumber, "number", "pageNumber");
+
     return this.request.getStates("", pageNumber);
   }
 
@@ -210,6 +201,8 @@ class FBI_Wrapper {
    */
   getStateByAbbreviation(stateAbbreviation) {
     this.request.checkNumParameters(arguments.length, this.getStateByAbbreviation);
+    this.request.checkTypeParameter(stateAbbreviation, "string", "stateAbbreviation");
+
     return this.request.getStates(stateAbbreviation);
   }
 
@@ -221,6 +214,7 @@ class FBI_Wrapper {
    */
   getRegions() {
     this.request.checkNumParameters(arguments.length, this.getRegions);
+
     return this.request.getRegions();
   }
 
@@ -232,6 +226,7 @@ class FBI_Wrapper {
   getRegionsByName(regionName) {
     this.request.checkNumParameters(arguments.length, this.getRegionsByName);
     regionName = this.request.checkValidRegion(regionName);
+
     return this.request.getRegions(regionName);
   }
 
@@ -243,6 +238,7 @@ class FBI_Wrapper {
    */
   getPoliceByNation() {
     this.request.checkNumParameters(arguments.length, this.getPoliceByNation);
+
     return this.request.getPoliceEmployment();
   }
 
@@ -254,6 +250,7 @@ class FBI_Wrapper {
   getPoliceByRegion(regionName) {
     this.request.checkNumParameters(arguments.length, this.getPoliceByRegion);
     regionName = this.request.checkValidRegion(regionName);
+
     return this.request.getPoliceEmployment(REGIONAL_SCOPE, regionName);
   }
 
@@ -264,6 +261,8 @@ class FBI_Wrapper {
    */
   getPoliceByState(stateAbbreviation) {
     this.request.checkNumParameters(arguments.length, this.getPoliceByState);
+    this.request.checkTypeParameter(stateAbbreviation, "string", "stateAbbreviation");
+
     return this.request.getPoliceEmployment(STATE_SCOPE, stateAbbreviation);
   }
 
@@ -274,6 +273,8 @@ class FBI_Wrapper {
    */
   getPoliceByORI(ori) {
     this.request.checkNumParameters(arguments.length, this.getPoliceByORI);
+    this.request.checkTypeParameter(ori, "string", "ori");
+
     return this.request.getPoliceEmployment(ORI_SCOPE, ori);
   }
 
@@ -291,6 +292,9 @@ class FBI_Wrapper {
    */
   getVictimsByNation(offense, classification) {
     this.request.checkNumParameters(arguments.length, this.getVictimsByNation);
+    this.request.checkTypeParameter(offense, "string", "offense");
+    this.request.checkTypeParameter(classification, "string", "classification");
+
     return this.request.getParticipants("victim", NATIONAL_SCOPE, offense, classification);
   }
 
@@ -306,6 +310,9 @@ class FBI_Wrapper {
   getVictimsByRegion(regionName, offense, classification) {
     this.request.checkNumParameters(arguments.length, this.getVictimsByRegion);
     regionName = this.request.checkValidRegion(regionName);
+    this.request.checkTypeParameter(offense, "string", "offense");
+    this.request.checkTypeParameter(classification, "string", "classification");
+
     return this.request.getParticipants("victim", REGIONAL_SCOPE, offense, classification, regionName);
   }
 
@@ -320,6 +327,10 @@ class FBI_Wrapper {
    */
   getVictimsByState(stateAbbreviation, offense, classification) {
     this.request.checkNumParameters(arguments.length, this.getVictimsByState);
+    this.request.checkTypeParameter(stateAbbreviation, "string", "stateAbbreviation");
+    this.request.checkTypeParameter(offense, "string", "offense");
+    this.request.checkTypeParameter(classification, "string", "classification")
+    ;
     return this.request.getParticipants("victim", STATE_SCOPE, offense, classification, stateAbbreviation)
   }
 
@@ -334,6 +345,10 @@ class FBI_Wrapper {
    */
   getVictimsByORI(ori, offense, classification) {
     this.request.checkNumParameters(arguments.length, this.getVictimsByORI);
+    this.request.checkTypeParameter(ori, "string", "ori");
+    this.request.checkTypeParameter(offense, "string", "offense");
+    this.request.checkTypeParameter(classification, "string", "classification");
+
     return this.request.getParticipants("victim", ORI_SCOPE, offense, classification, ori);
   }
 
@@ -349,6 +364,9 @@ class FBI_Wrapper {
    */
   getOffendersByNation(offense, classification) {
     this.request.checkNumParameters(arguments.length, this.getOffendersByNation);
+    this.request.checkTypeParameter(offense, "string", "offense");
+    this.request.checkTypeParameter(classification, "string", "classification");
+
     return this.request.getParticipants("offender", NATIONAL_SCOPE, offense, classification);
   }
 
@@ -364,6 +382,9 @@ class FBI_Wrapper {
   getOffendersByRegion(regionName, offense, classification) {
     this.request.checkNumParameters(arguments.length, this.getOffendersByRegion);
     regionName = this.request.checkValidRegion(regionName);
+    this.request.checkTypeParameter(offense, "string", "offense");
+    this.request.checkTypeParameter(classification, "string", "classification");
+
     return this.request.getParticipants("offender", REGIONAL_SCOPE, offense, classification, regionName);
   }
 
@@ -378,6 +399,10 @@ class FBI_Wrapper {
    */
   getOffendersByState(stateAbbreviation, offense, classification) {
     this.request.checkNumParameters(arguments.length, this.getOffendersByState);
+    this.request.checkTypeParameter(stateAbbreviation, "string", "stateAbbreviation");
+    this.request.checkTypeParameter(offense, "string", "offense");
+    this.request.checkTypeParameter(classification, "string", "classification");
+
     return this.request.getParticipants("offender", STATE_SCOPE, offense, classification, stateAbbreviation)
   }
 
@@ -392,6 +417,10 @@ class FBI_Wrapper {
    */
   getOffendersByORI(ori, offense, classification) {
     this.request.checkNumParameters(arguments.length, this.getOffendersByORI);
+    this.request.checkTypeParameter(ori, "string", "ori");
+    this.request.checkTypeParameter(offense, "string", "offense");
+    this.request.checkTypeParameter(classification, "string", "classification");
+
     return this.request.getParticipants("offender", ORI_SCOPE, offense, classification, ori);
   }
 
@@ -407,6 +436,8 @@ class FBI_Wrapper {
    */
   getCrimeCountByNation(offense) {
     this.request.checkNumParameters(arguments.length, this.getCrimeCountByNation);
+    this.request.checkTypeParameter(offense, "string", "offense");
+
     return this.request.getCrimeCount(NATIONAL_SCOPE, offense);
   }
 
@@ -421,6 +452,8 @@ class FBI_Wrapper {
   getCrimeCountByRegion(regionName, offense) {
     this.request.checkNumParameters(arguments.length, this.getCrimeCountByRegion);
     regionName = this.request.checkValidRegion(regionName);
+    this.request.checkTypeParameter(offense, "string", "offense");
+
     return this.request.getCrimeCount(REGIONAL_SCOPE, offense, regionName);
   }
 
@@ -434,6 +467,9 @@ class FBI_Wrapper {
    */
   getCrimeCountByState(stateAbbreviation, offense) {
     this.request.checkNumParameters(arguments.length, this.getCrimeCountByState);
+    this.request.checkTypeParameter(stateAbbreviation, "string", "stateAbbreviation");
+    this.request.checkTypeParameter(offense, "string", "offense");
+
     return this.request.getCrimeCount(STATE_SCOPE, offense, stateAbbreviation);
   }
 
@@ -447,6 +483,9 @@ class FBI_Wrapper {
    */
   getCrimeCountByORI(ori, offense) {
     this.request.checkNumParameters(arguments.length, this.getCrimeCountByORI);
+    this.request.checkTypeParameter(ori, "string", "ori");
+    this.request.checkTypeParameter(offense, "string", "offense");
+
     return this.request.getCrimeCount(ORI_SCOPE, offense, ori);
   }
 
@@ -459,6 +498,9 @@ class FBI_Wrapper {
    * @return {(Object|Array)}              Entries for each year containing detailed statistics about (each offense). If looking up a specific offense, returns an object. Otherwise, returns an array.
    */
   getCrimesByORI(ori, offense = "offenses") {
+    this.request.checkTypeParameter(ori, "string", "ori");
+    this.request.checkTypeParameter(offense, "string", "offense");
+
     return this.request.getCrimeSummary(ori, offense);
   }
 
@@ -471,8 +513,8 @@ class FBI_Wrapper {
    */
   getCrimeByORI(ori, offense) {
     this.request.checkNumParameters(arguments.length, this.getCrimeByORI);
-    if (typeof offense != "string")
-      throw new Error("Failed expectation: Argument 'offense' must be a string");
+    this.request.checkTypeParameter(ori, "string", "ori");
+    this.request.checkTypeParameter(offense, "string", "offense");
 
     return new Promise((resolve, reject) => {
       this.getCrimesByORI(ori, "offenses").then((result) => {
@@ -500,8 +542,8 @@ class FBI_Wrapper {
     */
     getMultipleCrimesByOri(ori, offenses) {
       this.request.checkNumParameters(arguments.length, this.getMultipleCrimesByOri);
-      if (!Array.isArray(offenses))
-        throw new Error("Failed expectation: Argument 'offenses' must be an array");
+      this.request.checkTypeParameter(ori, "string", "ori");
+      this.request.checkTypeParameter(offenses, "array", "offenses");
 
       if (offenses.length == 0)
         return [];
@@ -541,6 +583,7 @@ class FBI_Wrapper {
    */
   getDetailedArsonStatsByNation() {
     this.request.checkNumParameters(arguments.length, this.getDetailedArsonStatsByNation);
+
     return this.request.getArsonStats(NATIONAL_SCOPE);
   }
 
@@ -554,6 +597,7 @@ class FBI_Wrapper {
   getDetailedArsonStatsByRegion(regionName) {
     this.request.checkNumParameters(arguments.length, this.getDetailedArsonStatsByRegion);
     regionName = this.request.checkValidRegion(regionName);
+
     return this.request.getArsonStats(REGIONAL_SCOPE, regionName);
   }
 
@@ -565,6 +609,8 @@ class FBI_Wrapper {
    */
   getDetailedArsonStatsByState(stateAbbreviation) {
     this.request.checkNumParameters(arguments.length, this.getDetailedArsonStatsByState);
+    this.request.checkTypeParameter(stateAbbreviation, "string", "stateAbbreviation");
+
     return this.request.getArsonStats(STATE_SCOPE, stateAbbreviation);
   }
 
@@ -578,6 +624,7 @@ class FBI_Wrapper {
    */
   getParticipationByNation() {
     this.request.checkNumParameters(arguments.length, this.getParticipationByNation);
+
     return this.request.getAgencyParticipation(NATIONAL_SCOPE);
   }
 
@@ -589,6 +636,7 @@ class FBI_Wrapper {
   getParticipationByRegion(regionName) {
     this.request.checkNumParameters(arguments.length, this.getParticipationByRegion);
     regionName = this.request.checkValidRegion(regionName);
+
     return this.request.getAgencyParticipation(REGIONAL_SCOPE, regionName);
   }
 
@@ -599,6 +647,8 @@ class FBI_Wrapper {
    */
   getParticipationByState(stateAbbreviation) {
     this.request.checkNumParameters(arguments.length, this.getParticipationByState);
+    this.request.checkTypeParameter(stateAbbreviation, "string", "stateAbbreviation");
+
     return this.request.getAgencyParticipation(STATE_SCOPE, stateAbbreviation);
   }
 
@@ -609,6 +659,8 @@ class FBI_Wrapper {
    */
   getParticipationByORI(ori) {
     this.request.checkNumParameters(arguments.length, this.getParticipationByORI);
+    this.request.checkTypeParameter(ori, "string", "ori");
+
     return this.request.getAgencyParticipation(ORI_SCOPE, ori)
   }
 
@@ -621,6 +673,7 @@ class FBI_Wrapper {
    */
   getCrimeEstimatesByNation() {
     this.request.checkNumParameters(arguments.length, this.getCrimeEstimatesByNation);
+
     return this.request.getEstimates(NATIONAL_SCOPE);
   }
 
@@ -634,6 +687,7 @@ class FBI_Wrapper {
   getCrimeEstimatesByRegion(regionName) {
     this.request.checkNumParameters(arguments.length, this.getCrimeEstimatesByRegion);
     regionName = this.request.checkValidRegion(regionName);
+
     return this.request.getEstimates(REGIONAL_SCOPE, regionName);
   }
 
@@ -645,6 +699,8 @@ class FBI_Wrapper {
    */
   getCrimeEstimatesByState(stateAbbreviation) {
     this.request.checkNumParameters(arguments.length, this.getCrimeEstimatesByState);
+    this.request.checkTypeParameter(stateAbbreviation, "string", "stateAbbreviation");
+
     return this.request.getEstimates(STATE_SCOPE, stateAbbreviation);
   }
 

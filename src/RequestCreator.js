@@ -139,6 +139,14 @@ class RequestCreator {
     }
   }
 
+  checkTypeParameter(parameter, desiredType, name) {
+    // Special check for arrays (which are typeof object).
+    if (desiredType == "array" && Array.isArray(parameter))
+      return;
+    if (typeof parameter != desiredType)
+      throw new Error(`Failed expectation: Argument '${name}' must be a '${desiredType}'.`);
+  }
+
   getAgencies(type = "default", relevantInfo = "", pageNumber = 0) {
     switch(type) {
       case "default":
