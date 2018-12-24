@@ -492,7 +492,7 @@ class FBI_Wrapper {
   /**
    * Get detailed statistics about the offenses committed within the jurisdiction of a particular agency.<br>
    * If no one type of offense is specified, then this method returns statistics about all types of offenses.<br>
-   * If looking for (a) specific offense(s), note that it is much faster to use getCrimeByOri or getMultipleCrimesByOri.<br>
+   * If looking for (a) specific offense(s), note that it is much faster to use getCrimeByOri or getMultipleCrimesByORI.<br>
    * @param  {String} ori                  The ORI of the agency in question
    * @param  {String} [offense="offenses"] The offense for which to find statistics. If no offense is specified, then get statistics about all offenses.
    * @return {(Object|Array)}              Entries for each year containing detailed statistics about (each offense). If looking up a specific offense, returns an object. Otherwise, returns an array.
@@ -540,8 +540,8 @@ class FBI_Wrapper {
     * @param {Array} offenses The offenses for which to find statistics.
     * @return {Array}         Entries for each year containing detailed statistics about the offenses. Array of arrays, where an index into the returned array matches with that of the offenses array passsed in. Returns undefined if the ORI provided is not valid.
     */
-    getMultipleCrimesByOri(ori, offenses) {
-      this.request.checkNumParameters(arguments.length, this.getMultipleCrimesByOri);
+    getMultipleCrimesByORI(ori, offenses) {
+      this.request.checkNumParameters(arguments.length, this.getMultipleCrimesByORI);
       this.request.checkTypeParameter(ori, "string", "ori");
       this.request.checkTypeParameter(offenses, "array", "offenses");
 

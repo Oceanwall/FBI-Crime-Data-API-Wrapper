@@ -141,11 +141,11 @@ describe("FBI UCR Wrapper, Crime Frequency Information Calls", function() {
     assert.throws(function() {wrapper.getCrimeByORI("NY0290200")}, Error);
   });
 
-  // getMultipleCrimesByOri
+  // getMultipleCrimesByORI
 
   it("should get detailed statistics about multiple crimes committed within the jurisdiction of an agency", async function() {
-    console.log("getMultipleCrimesByOri");
-    var information = await wrapper.getMultipleCrimesByOri("NY0290200", ["property-crime", "arson"]);
+    console.log("getMultipleCrimesByORI");
+    var information = await wrapper.getMultipleCrimesByORI("NY0290200", ["property-crime", "arson"]);
     expect(information).to.be.an('array');
     expect(information).to.not.be.empty;
     expect(information[0]).to.not.be.empty;
@@ -153,29 +153,29 @@ describe("FBI UCR Wrapper, Crime Frequency Information Calls", function() {
   });
 
   it("should get detailed statistics about a crime committed within the jurisdiction of an agency", async function() {
-    var information = await wrapper.getMultipleCrimesByOri("NY0290200", ["arson"]);
+    var information = await wrapper.getMultipleCrimesByORI("NY0290200", ["arson"]);
     expect(information).to.be.an('array');
     expect(information).to.not.be.empty;
     expect(information[0]).to.not.be.empty;
   });
 
   it("should immediately get an empty array after being provided with an empty array", async function() {
-    var information = await wrapper.getMultipleCrimesByOri("NY0290200", []);
+    var information = await wrapper.getMultipleCrimesByORI("NY0290200", []);
     expect(information).to.be.an('array');
     expect(information).to.be.empty;
   });
 
   it("should get undefined due to being provided an invalid ORI", async function() {
-    var information = await wrapper.getMultipleCrimesByOri("ewqewqeqewqe", ["property-crime", "arson"]);
+    var information = await wrapper.getMultipleCrimesByORI("ewqewqeqewqe", ["property-crime", "arson"]);
     expect(information).to.be.undefined;
   });
 
   it("should get an error due to being passed a non-array", async function() {
-    assert.throws(function() {wrapper.getMultipleCrimesByOri("NY0290200", undefined)}, Error);
+    assert.throws(function() {wrapper.getMultipleCrimesByORI("NY0290200", undefined)}, Error);
   });
 
   it("should get an error due to being passed an inappropriate number of arguments", async function() {
-    assert.throws(function() {wrapper.getMultipleCrimesByOri("NY0290200")}, Error);
+    assert.throws(function() {wrapper.getMultipleCrimesByORI("NY0290200")}, Error);
   });
 
 });

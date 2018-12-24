@@ -1,8 +1,8 @@
 # FBI (Uniform) Crime Data API Wrapper
 
-Minimalist FBI Uniform Crime Data (UCR) API Wrapper, meant primarily for personal use with a future project, but shared publicly so that others can also use it.
+Minimalist FBI Uniform Crime Data (UCR) API Wrapper.
 
-Fulfills most if not all of the functionality indicated by the [FBI uniform crime data API found here](https://crime-data-explorer.fr.cloud.gov/api). Also extends some additional functionality that might be helpful.
+Fulfills most if not all of the functionality indicated by the [FBI Uniform Crime Data API found here](https://crime-data-explorer.fr.cloud.gov/api). Extends additional helpful functionality (optimized performance, additional queries, easier usage).
 
 ## Basic Usage
 
@@ -12,15 +12,18 @@ require('dotenv').config();
 const FBI_Wrapper = require("fbi-ucr-api");
 let wrapper = new FBI_Wrapper(process.env.API_KEY);
 
+// Promises
+
 wrapper.getVictimsByORI("MI2802800", "burglary", "age").then((results) => {
   console.log(results);
 });
-wrapper.getCrimeCountByRegion("West", "aggravated-assault").then((results) => {
+
+// Asynchronous Function
+
+async function something() {
+  let results = await wrapper.getVictimsByState("TX", "burglary", "age");
   console.log(results);
-});
-wrapper.getVictimsByState("TX", "burglary", "age").then((results) => {
-  console.log(results);
-});
+}
 ```
 
 Additional examples for how to use these methods can be found in examples/index.js.
@@ -31,21 +34,30 @@ For information about how to use a .env file, see [documentation for dotenv](htt
 
 ```
 npm test
+
+// Or if testing running individual category tests:
+
+mocha test/testFileName.js --no-timeouts
 ```
 
-This command checks the intended return types of all methods versus their actual return types to ensure that they are returning the correct type of information.
+Tests check the intended return types and error handling capabilities of functions.
 
-**Note:** Running all of the tests may take a significant amount of time (between 1-2 minutes) due to all of the GET requests made by the API wrapper.
+**Note:** Running all of the tests may take a significant amount of time (roughly 2 minutes) due to all of the GET requests made by the API wrapper.
 
 ## Additional Remarks
 
-To understand the data provided by this API wrapper, it can be helpful to look at other projects that have used this data. One such (official US Government) project is the FBI's [crime data explorer](https://crime-data-explorer.fr.cloud.gov/api), which visualizes this information.
+**I am aware of the issue where attempting to get arson / crime estimate statistics by region returns undefined.**<br>
+This is a server error on the part of the FBI dataset, and I do not know when it will be resolved.
+
+If anybody knows a better way to do error checking for this API wrapper (without necessitating as many as 4 lines of error checking  calls per function), please let me know!
+
+To understand the data provided by this API wrapper, it can be helpful to look at other projects that have used this data. One such (official US Government) project is the FBI's [crime data explorer](https://crime-data-explorer.fr.cloud.gov/), which visualizes this information.
 
 [Find this package on npm here](https://www.npmjs.com/package/fbi-ucr-api).
 
-This API wrapper is licensed under the MIT License. Feel free to fork this repo and make whatever edits you want to the wrapper.
+This API wrapper is licensed under the MIT License. Feel free to fork and change!
 
-Do not expect maintenance.
+Maintenance may occasionally occur, but don't expect it.
 
 <!--
 TODO LIST:
@@ -53,482 +65,703 @@ TODO LIST:
 (x) Document all default methods
 (x) Change return types (from Promise -> Object to Promise -> Array for that which can be isolated)
 (x) Write test cases for all default methods
-( ) Come up with extra methods that extend functionality
-( ) Document all methods
-( ) Write test cases for all methods
-( ) Error checking for all methods (check parameters? ensure correct typing?)
-( ) TODO ^ Abstract out into error checking function?
-( ) Error checking test cases for all methods
-( ) Mention known bug (dataset server down, not returning info)
-
-New custom methods include:
-
-getCrimeByORI
-getMultipleCrimesByOri
-getAgenciesByRegion
-getAgenciesByCoordinates
-getAllStates
-getStatesByRegion
-
-get information by year range? (victims, offenders, crime statistics)
-possibly take state ids (in addition to abbreviations?)
-
-there has got to be a better way to do the error handler smh
-
-NOTE: removed error handling toggling (REMOVE potential for USER ERROR, WE OPINIONATED NOW BOYS)
-TODO: remove errors from fbi wrapper area?
+(x) Come up with extra methods that extend functionality
+(x) Document all methods
+(x) Write test cases for all methods
+(x) Error checking for all methods (check parameters? ensure correct typing?)
+(x) Mention known bug (dataset server down, not returning info)
 -->
 
 ## API_DOCUMENTATION
 
 <!-- Generated by documentation.js. Update this documentation by updating the source code. -->
 
-#### Table of Contents
-
--   [constructor](#constructor)
-    -   [Parameters](#parameters)
--   [getAgencies](#getagencies)
--   [getAgenciesByState](#getagenciesbystate)
-    -   [Parameters](#parameters-1)
--   [getAgencyByORI](#getagencybyori)
-    -   [Parameters](#parameters-2)
--   [getStates](#getstates)
-    -   [Parameters](#parameters-3)
--   [getStateByAbbreviation](#getstatebyabbreviation)
-    -   [Parameters](#parameters-4)
--   [getRegions](#getregions)
--   [getRegionsByName](#getregionsbyname)
-    -   [Parameters](#parameters-5)
--   [getPoliceByNation](#getpolicebynation)
--   [getPoliceByRegion](#getpolicebyregion)
-    -   [Parameters](#parameters-6)
--   [getPoliceByState](#getpolicebystate)
-    -   [Parameters](#parameters-7)
--   [getPoliceByORI](#getpolicebyori)
-    -   [Parameters](#parameters-8)
--   [getVictimsByNation](#getvictimsbynation)
-    -   [Parameters](#parameters-9)
--   [getVictimsByRegion](#getvictimsbyregion)
-    -   [Parameters](#parameters-10)
--   [getVictimsByState](#getvictimsbystate)
-    -   [Parameters](#parameters-11)
--   [getVictimsByORI](#getvictimsbyori)
-    -   [Parameters](#parameters-12)
--   [getOffendersByNation](#getoffendersbynation)
-    -   [Parameters](#parameters-13)
--   [getOffendersByRegion](#getoffendersbyregion)
-    -   [Parameters](#parameters-14)
--   [getOffendersByState](#getoffendersbystate)
-    -   [Parameters](#parameters-15)
--   [getOffendersByORI](#getoffendersbyori)
-    -   [Parameters](#parameters-16)
--   [getCrimeCountByNation](#getcrimecountbynation)
-    -   [Parameters](#parameters-17)
--   [getCrimeCountByRegion](#getcrimecountbyregion)
-    -   [Parameters](#parameters-18)
--   [getCrimeCountByState](#getcrimecountbystate)
-    -   [Parameters](#parameters-19)
--   [getCrimeCountByORI](#getcrimecountbyori)
-    -   [Parameters](#parameters-20)
--   [getCrimesByORI](#getcrimesbyori)
-    -   [Parameters](#parameters-21)
--   [getDetailedArsonStatsByNation](#getdetailedarsonstatsbynation)
--   [getDetailedArsonStatsByRegion](#getdetailedarsonstatsbyregion)
-    -   [Parameters](#parameters-22)
--   [getDetailedArsonStatsByState](#getdetailedarsonstatsbystate)
-    -   [Parameters](#parameters-23)
--   [getParticipationByNation](#getparticipationbynation)
--   [getParticipationByRegion](#getparticipationbyregion)
-    -   [Parameters](#parameters-24)
--   [getParticipationByState](#getparticipationbystate)
-    -   [Parameters](#parameters-25)
--   [getParticipationByORI](#getparticipationbyori)
-    -   [Parameters](#parameters-26)
--   [getCrimeEstimatesByNation](#getcrimeestimatesbynation)
--   [getCrimeEstimatesByRegion](#getcrimeestimatesbyregion)
-    -   [Parameters](#parameters-27)
--   [getCrimeEstimatesByState](#getcrimeestimatesbystate)
-    -   [Parameters](#parameters-28)
+### Table of Contents
+
+-   [constructor][1]
+    -   [Parameters][2]
+-   [getAgencies][3]
+-   [getAgenciesByCoordinates][4]
+    -   [Parameters][5]
+-   [getAgenciesByRegion][6]
+    -   [Parameters][7]
+-   [getAgenciesByState][8]
+    -   [Parameters][9]
+-   [getAgencyByORI][10]
+    -   [Parameters][11]
+-   [getStates][12]
+    -   [Parameters][13]
+-   [getAllStates][14]
+-   [getStatesByRegion][15]
+    -   [Parameters][16]
+-   [getStateByAbbreviation][17]
+    -   [Parameters][18]
+-   [getRegions][19]
+-   [getRegionsByName][20]
+    -   [Parameters][21]
+-   [getPoliceByNation][22]
+-   [getPoliceByRegion][23]
+    -   [Parameters][24]
+-   [getPoliceByState][25]
+    -   [Parameters][26]
+-   [getPoliceByORI][27]
+    -   [Parameters][28]
+-   [getVictimsByNation][29]
+    -   [Parameters][30]
+-   [getVictimsByRegion][31]
+    -   [Parameters][32]
+-   [getVictimsByState][33]
+    -   [Parameters][34]
+-   [getVictimsByORI][35]
+    -   [Parameters][36]
+-   [getOffendersByNation][37]
+    -   [Parameters][38]
+-   [getOffendersByRegion][39]
+    -   [Parameters][40]
+-   [getOffendersByState][41]
+    -   [Parameters][42]
+-   [getOffendersByORI][43]
+    -   [Parameters][44]
+-   [getCrimeCountByNation][45]
+    -   [Parameters][46]
+-   [getCrimeCountByRegion][47]
+    -   [Parameters][48]
+-   [getCrimeCountByState][49]
+    -   [Parameters][50]
+-   [getCrimeCountByORI][51]
+    -   [Parameters][52]
+-   [getCrimesByORI][53]
+    -   [Parameters][54]
+-   [getCrimeByORI][55]
+    -   [Parameters][56]
+-   [getMultipleCrimesByORI][57]
+    -   [Parameters][58]
+-   [getDetailedArsonStatsByNation][59]
+-   [getDetailedArsonStatsByRegion][60]
+    -   [Parameters][61]
+-   [getDetailedArsonStatsByState][62]
+    -   [Parameters][63]
+-   [getParticipationByNation][64]
+-   [getParticipationByRegion][65]
+    -   [Parameters][66]
+-   [getParticipationByState][67]
+    -   [Parameters][68]
+-   [getParticipationByORI][69]
+    -   [Parameters][70]
+-   [getCrimeEstimatesByNation][71]
+-   [getCrimeEstimatesByRegion][72]
+    -   [Parameters][73]
+-   [getCrimeEstimatesByState][74]
+    -   [Parameters][75]
 
-### constructor
+## constructor
 
-Creates a new FBI_Wrapper object, which is used to more easily access the FBI UCR API.
+Creates a new FBI_Wrapper object, which is used to more easily access the FBI UCR API.<br>
 
-#### Parameters
+### Parameters
 
--   `userAPIkey` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The api.data.gov API key, which is required to access the FBI UCR API. API Keys can be generated here: <https://api.data.gov/signup/>
--   `strictErrorChecking` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Indicates whether or not the wrapper should check for potential errors, such as a mismatch in the number of parameters passed to a method. (optional, default `true`)
+-   `userAPIkey` **[String][76]** The api.data.gov API key, which is required to access the FBI UCR API. API Keys can be generated here: [https://api.data.gov/signup/][77]
+-   `strictErrorChecking` **[Boolean][78]** NOW DEPRECATED, DO NOT USE. Disabled error checking by the wrapper. (optional, default `true`)
 
-### getAgencies
+## getAgencies
 
-Gets information about all agencies in the United States.
+Gets information about all agencies in the United States.<br>
+If desiring to get information about all agencies in the U.S in an array form, consider using getAgenciesByRegion and passing in the "U.S" territories parameter.<br>
 
-Returns **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Information about each agency in the U.S, subdivided into states that are further subdivided into agency objects (identified by their ORI-9 (Department Originating Agency Identifier Number, character length 9)).
+Returns **[Object][79]** Information about each agency in the U.S, subdivided into states that are further subdivided into agency objects (identified by their ORI-9 (Department Originating Agency Identifier Number, character length 9)).
 
-### getAgenciesByState
+## getAgenciesByCoordinates
 
-Gets information about all agencies in a given state
+Gets information about all the agencies within _range_ kilometers of the provided coordinates.
 
-#### Parameters
+### Parameters
 
--   `stateAbbreviation` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** State abbreviation
--   `pageNumber` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** For states with many agencies, data is delivered in multiple "pages", as indicated by the pagination property/object in the returned object. This property allows you to select which page of results you want (Pages are 0-indexed). (optional, default `0`)
+-   `latitude` **[Number][80]** Desired latitude to center agency search around.
+-   `longitude` **[Number][80]** Desired longitude to center agency search around.
+-   `range` **[Number][80]** Length (km) of circular radius in which to find agencies. (optional, default `50`)
 
-Returns **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Information about each agency in a given state.
+Returns **[Array][81]** Information about all the agencies within _range_ kilometers of the provided coordinates
 
-### getAgencyByORI
+## getAgenciesByRegion
 
-Gets information about a specific agency, as identified by the provided ORI-9.
-If no ORI is provided, then gets information about all agencies in the United States.
+Gets information about all agencies in a specific region.<br>
+Permitted region numerical codes are 0, 1, 2, 3, 4, 99<br>
+Permitted region string names are "U.S. Territories", "Northeast", "Midwest", "South", "West", "Other".<br>
 
-#### Parameters
+### Parameters
 
--   `ori` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The ORI of the desired agency. (optional, default `""`)
+-   `regionName` **([Number][80] \| [String][76])** This region's numerical code. Note that this parameter can also be a String (the region's name).
 
-Returns **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Information about the desired agency, or if no ORI is provided, information about each agency in the U.S.
+Returns **[Array][81]** Information about all the agencies in that specific region. Undefined if a bad region name is provided.
 
-### getStates
+## getAgenciesByState
 
-Gets identifying information about all the states in the U.S, such as their ID, abbreviation, and region.
+Gets information about all agencies in a given state<br>
 
-#### Parameters
+### Parameters
 
--   `pageNumber` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Denotes a specific page of results to view, as indicated by the pagination property/object. Each call only returns 20 states at a time. (optional, default `0`)
+-   `stateAbbreviation` **[String][76]** State abbreviation
+-   `pageNumber` **[Number][80]** For states with many agencies, data is delivered in multiple "pages", as indicated by the pagination property/object in the returned object. This property allows you to select which page of results you want (Pages are 0-indexed). (optional, default `0`)
 
-Returns **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Information about (20) states.
+Returns **[Object][79]** Information about each agency in a given state.
 
-### getStateByAbbreviation
+## getAgencyByORI
 
-Gets identifying information about a specific state based on its abbreviation.
+Gets information about a specific agency, as identified by the provided ORI-9.<br>
+If no ORI is provided, then gets information about all agencies in the United States.<br>
 
-#### Parameters
+### Parameters
 
--   `stateAbbreviation` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** State abbreviation (two characters long, like TX).
+-   `ori` **[String][76]** The ORI of the desired agency. (optional, default `""`)
 
-Returns **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Identifying information about that state.
+Returns **[Object][79]** Information about the desired agency, or if no ORI is provided, information about each agency in the U.S.
 
-### getRegions
+## getStates
 
-Gets identifying information about all the regions in the U.S
+Gets identifying information about all the states in the U.S, such as their ID, abbreviation, and region.<br>
+Expressed in separate pages (20 results per page). If desiring all states at once, use getAllStates()<br>
 
-Returns **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** Information about all regions in the U.S
+### Parameters
 
-### getRegionsByName
+-   `pageNumber` **[Number][80]** Denotes a specific page of results to view, as indicated by the pagination property/object. Each call only returns 20 states at a time. (optional, default `0`)
 
-Gets identifying information about a specific region based on its name or numerical code.
+Returns **[Object][79]** Information about (20) states.
 
-#### Parameters
+## getAllStates
 
--   `regionName` **([Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number) \| [String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String))** This region's numerical code. Note that this parameter can also be a String (the region's name).
+Gets identifying information about all the states in the U.S, such as their ID, abbreviation, and region<br>
 
-Returns **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Information about that specific region.
+Returns **[Array][81]** Information about all US states.
 
-### getPoliceByNation
+## getStatesByRegion
 
-Gets nationwide police employment statistics for each year (up to 1960).
+Gets identifying information about all states in a specified region<br>
 
-Returns **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** Nationwide police employment statistics for each year
+### Parameters
 
-### getPoliceByRegion
+-   `regionName` **([Number][80] \| [String][76])** This region's numerical code. Note that this parameter can also be a String (the region's name).
 
-Gets regionwide police employment statistics for each year (up to 1960).
+Returns **[Array][81]** Information about all states in that region.
 
-#### Parameters
+## getStateByAbbreviation
 
--   `regionName` **([Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number) \| [String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String))** This region's numerical code. Note that this parameter can also be a String (the region's name).
+Gets identifying information about a specific state based on its abbreviation.<br>
 
-Returns **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** Regionwide police employment statistics for each year
+### Parameters
 
-### getPoliceByState
+-   `stateAbbreviation` **[String][76]** State abbreviation (two characters long, like TX).
 
-Gets statewide police employment statistics for each year (up to 1960).
+Returns **[Object][79]** Identifying information about that state.
 
-#### Parameters
+## getRegions
 
--   `stateAbbreviation` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** State Abbreviation, two characters long
+Gets identifying information about all the regions in the U.S<br>
 
-Returns **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** Statewide police employment statistics for each year
+Returns **[Array][81]** Information about all regions in the U.S
 
-### getPoliceByORI
+## getRegionsByName
 
-Get police employment statistics for a certain agency (hypothetically up the 1960, but many agencies didn't start recording information until later).
+Gets identifying information about a specific region based on its name or numerical code.<br>
 
-#### Parameters
+### Parameters
 
--   `ori` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The ORI of the desired agency.
+-   `regionName` **([Number][80] \| [String][76])** This region's numerical code. Note that this parameter can also be a String (the region's name).
 
-Returns **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** Agency police employment statistics for each year, in addition to other details about the agency (such as the population that year of the served area).
+Returns **[Object][79]** Information about that specific region.
 
-### getVictimsByNation
+## getPoliceByNation
 
-Given a specific offense and a classification criteria for the victims, returns for each year the number of victims (of said offense) that fall into each category of the classification criteria.
-This method encompasses nation-wide data.
-Possible offenses are: "violent_crime", "homicide", "rape-legacy", "rape-revised", "robbery", "aggravated-assault", "property-crime", "burglary", "larceny", "motor-vehicle-theft", and "arson".
-Possible classifications are: "age", "count", "ethnicity", "race", and "sex".
-Note that entries are not guaranteed to be in any order, and also be aware that for some years, not all agencies reported data, so data might be skewed from before 2005.
+Gets nationwide police employment statistics for each year (up to 1960).<br>
 
-#### Parameters
+Returns **[Array][81]** Nationwide police employment statistics for each year
 
--   `offense` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The offense to find victims of.
--   `classification` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The classification criteria by which the victims will be categorized.
+## getPoliceByRegion
 
-Returns **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Entries for each year containing the # of (nation-wide victims of the given offense) in each category type.
+Gets regionwide police employment statistics for each year (up to 1960).<br>
 
-### getVictimsByRegion
+### Parameters
 
-Given a specific offense and a classification criteria for the victims, returns for each year the number of victims (of said offense) that fall into each category of the classification criteria.
-This method encompasses region-wide data.
-Additional information can be found under method getVictimsByNation
+-   `regionName` **([Number][80] \| [String][76])** This region's numerical code. Note that this parameter can also be a String (the region's name).
 
-#### Parameters
+Returns **[Array][81]** Regionwide police employment statistics for each year
 
--   `regionName` **([Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number) \| [String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String))** This region's numerical code. Note that this parameter can also be a String (the region's name).
--   `offense` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The offense to find victims of.
--   `classification` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The classification criteria by which the victims will be categorized.
+## getPoliceByState
 
-Returns **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Entries for each year containing the # of (region-wide victims of the given offense) in each category type.
+Gets statewide police employment statistics for each year (up to 1960).<br>
 
-### getVictimsByState
+### Parameters
 
-Given a specific offense and a classification criteria for the victims, returns for each year the number of victims (of said offense) that fall into each category of the classification criteria.
-This method encompasses state-wide data.
-Additional information can be found under method getVictimsByNation
+-   `stateAbbreviation` **[String][76]** State Abbreviation, two characters long
 
-#### Parameters
+Returns **[Array][81]** Statewide police employment statistics for each year
 
--   `stateAbbreviation` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** State Abbreviation, two characters long
--   `offense` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The offense to find victims of.
--   `classification` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The classification criteria by which the victims will be categorized.
+## getPoliceByORI
 
-Returns **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Entries for each year containing the # of (state-wide victims of the given offense) in each category type.
+Get police employment statistics for a certain agency (hypothetically up the 1960, but many agencies didn't start recording information until later).<br>
 
-### getVictimsByORI
+### Parameters
 
-Given a specific offense and a classification criteria for the victims, returns for each year the number of victims (of said offense) that fall into each category of the classification criteria.
-This method encompasses agency-wide data.
-Additional information can be found under method getVictimsByNation
+-   `ori` **[String][76]** The ORI of the desired agency.
 
-#### Parameters
+Returns **[Array][81]** Agency police employment statistics for each year, in addition to other details about the agency (such as the population that year of the served area).
 
--   `ori` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The ORI of the agency in question
--   `offense` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The offense to find victims of.
--   `classification` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The classification criteria by which the victims will be categorized.
+## getVictimsByNation
 
-Returns **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Entries for each year containing the # of (agency-wide victims of the given offense) in each category type.
+Given a specific offense and a classification criteria for the victims, returns for each year the number of victims (of said offense) that fall into each category of the classification criteria.<br>
+This method encompasses nation-wide data.<br>
+Possible offenses are: "violent_crime", "homicide", "rape-legacy", "rape-revised", "robbery", "aggravated-assault", "property-crime", "burglary", "larceny", "motor-vehicle-theft", and "arson".<br>
+Possible classifications are: "age", "count", "ethnicity", "race", and "sex".<br>
+Note that entries are not guaranteed to be in any order, and also be aware that for some years, not all agencies reported data, so data might be skewed from before 2005.<br>
 
-### getOffendersByNation
+### Parameters
 
-Given a specific offense and a classification criteria for the offenders, returns for each year the number of offenders (who committed said offense) that fall into each category of the classification criteria.
-This method encompasses nation-wide data.
-Additional information can be found under method getVictimsByNation
+-   `offense` **[String][76]** The offense to find victims of.
+-   `classification` **[String][76]** The classification criteria by which the victims will be categorized.
 
-#### Parameters
+Returns **[Object][79]** Entries for each year containing the # of (nation-wide victims of the given offense) in each category type.
 
--   `offense` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The offense for which to find offenders.
--   `classification` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The classification criteria by which the offenders will be categorized.
+## getVictimsByRegion
 
-Returns **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Entries for each year containing the # of (nation-wide offenders who committed the given offense) in each category type.
+Given a specific offense and a classification criteria for the victims, returns for each year the number of victims (of said offense) that fall into each category of the classification criteria.<br>
+This method encompasses region-wide data.<br>
+Additional information can be found under method getVictimsByNation<br>
 
-### getOffendersByRegion
+### Parameters
 
-Given a specific offense and a classification criteria for the offenders, returns for each year the number of offenders (who committed said offense) that fall into each category of the classification criteria.
-This method encompasses region-wide data.
-Additional information can be found under method getVictimsByNation
+-   `regionName` **([Number][80] \| [String][76])** This region's numerical code. Note that this parameter can also be a String (the region's name).
+-   `offense` **[String][76]** The offense to find victims of.
+-   `classification` **[String][76]** The classification criteria by which the victims will be categorized.
 
-#### Parameters
+Returns **[Object][79]** Entries for each year containing the # of (region-wide victims of the given offense) in each category type.
 
--   `regionName` **([Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number) \| [String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String))** This region's numerical code. Note that this parameter can also be a String (the region's name).
--   `offense` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The offense for which to find offenders.
--   `classification` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The classification criteria by which the offenders will be categorized.
+## getVictimsByState
 
-Returns **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Entries for each year containing the # of (region-wide offenders who committed the given offense) in each category type.
+Given a specific offense and a classification criteria for the victims, returns for each year the number of victims (of said offense) that fall into each category of the classification criteria.<br>
+This method encompasses state-wide data.<br>
+Additional information can be found under method getVictimsByNation<br>
 
-### getOffendersByState
+### Parameters
 
-Given a specific offense and a classification criteria for the offenders, returns for each year the number of offenders (who committed said offense) that fall into each category of the classification criteria.
-This method encompasses state-wide data.
-Additional information can be found under method getVictimsByNation
+-   `stateAbbreviation` **[String][76]** State Abbreviation, two characters long
+-   `offense` **[String][76]** The offense to find victims of.
+-   `classification` **[String][76]** The classification criteria by which the victims will be categorized.
 
-#### Parameters
+Returns **[Object][79]** Entries for each year containing the # of (state-wide victims of the given offense) in each category type.
 
--   `stateAbbreviation` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** State Abbreviation, two characters long
--   `offense` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The offense for which to find offenders.
--   `classification` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The classification criteria by which the offenders will be categorized.
+## getVictimsByORI
 
-Returns **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Entries for each year containing the # of (state-wide offenders who committed the given offense) in each category type.
+Given a specific offense and a classification criteria for the victims, returns for each year the number of victims (of said offense) that fall into each category of the classification criteria.<br>
+This method encompasses agency-wide data.<br>
+Additional information can be found under method getVictimsByNation<br>
 
-### getOffendersByORI
+### Parameters
 
-Given a specific offense and a classification criteria for the offenders, returns for each year the number of offenders (who committed said offense) that fall into each category of the classification criteria.
-This method encompasses agency-wide data.
-Additional information can be found under method getVictimsByNation
+-   `ori` **[String][76]** The ORI of the agency in question
+-   `offense` **[String][76]** The offense to find victims of.
+-   `classification` **[String][76]** The classification criteria by which the victims will be categorized.
 
-#### Parameters
+Returns **[Object][79]** Entries for each year containing the # of (agency-wide victims of the given offense) in each category type.
 
--   `ori` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The ORI of the agency in question
--   `offense` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The offense for which to find offenders.
--   `classification` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The classification criteria by which the offenders will be categorized.
+## getOffendersByNation
 
-Returns **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Entries for each year containing the # of (agency-wide offenders who committed the given offense) in each category type.
+Given a specific offense and a classification criteria for the offenders, returns for each year the number of offenders (who committed said offense) that fall into each category of the classification criteria.<br>
+This method encompasses nation-wide data.<br>
+Additional information can be found under method getVictimsByNation<br>
 
-### getCrimeCountByNation
+### Parameters
 
-Given a specific offense, returns for each year the number of incidents and (offense occurrences) that occurred involving that offense.
-Note that the difference between an incident and an offense is that within an incident, a person could have committed multiple offenses.
-This method encompasses nation-wide data.
-Additional information can be found under method getVictimsByNation
+-   `offense` **[String][76]** The offense for which to find offenders.
+-   `classification` **[String][76]** The classification criteria by which the offenders will be categorized.
 
-#### Parameters
+Returns **[Object][79]** Entries for each year containing the # of (nation-wide offenders who committed the given offense) in each category type.
 
--   `offense` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The offense for which to find the # of incidents and occurrences.
+## getOffendersByRegion
 
-Returns **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** Entries for each year containing the # of incidents and (offense occurrences) involving the given offense
+Given a specific offense and a classification criteria for the offenders, returns for each year the number of offenders (who committed said offense) that fall into each category of the classification criteria.<br>
+This method encompasses region-wide data.<br>
+Additional information can be found under method getVictimsByNation<br>
 
-### getCrimeCountByRegion
+### Parameters
 
-Given a specific offense, returns for each year the number of incidents and (offense occurrences) that occurred involving that offense.
-This method encompasses region-wide data.
-Additional information can be found under method getCrimeCountByNation
+-   `regionName` **([Number][80] \| [String][76])** This region's numerical code. Note that this parameter can also be a String (the region's name).
+-   `offense` **[String][76]** The offense for which to find offenders.
+-   `classification` **[String][76]** The classification criteria by which the offenders will be categorized.
 
-#### Parameters
+Returns **[Object][79]** Entries for each year containing the # of (region-wide offenders who committed the given offense) in each category type.
 
--   `regionName` **([Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number) \| [String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String))** This region's numerical code. Note that this parameter can also be a String (the region's name).
--   `offense` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The offense for which to find the # of incidents and occurrences.
+## getOffendersByState
 
-Returns **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** Entries for each year containing the # of incidents and (offense occurrences) involving the given offense
+Given a specific offense and a classification criteria for the offenders, returns for each year the number of offenders (who committed said offense) that fall into each category of the classification criteria.<br>
+This method encompasses state-wide data.<br>
+Additional information can be found under method getVictimsByNation<br>
 
-### getCrimeCountByState
+### Parameters
 
-Given a specific offense, returns for each year the number of incidents and (offense occurrences) that occurred involving that offense.
-This method encompasses state-wide data.
-Additional information can be found under method getCrimeCountByNation
+-   `stateAbbreviation` **[String][76]** State Abbreviation, two characters long
+-   `offense` **[String][76]** The offense for which to find offenders.
+-   `classification` **[String][76]** The classification criteria by which the offenders will be categorized.
 
-#### Parameters
+Returns **[Object][79]** Entries for each year containing the # of (state-wide offenders who committed the given offense) in each category type.
 
--   `stateAbbreviation` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** State Abbreviation, two characters long
--   `offense` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The offense for which to find the # of incidents and occurrences.
+## getOffendersByORI
 
-Returns **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** Entries for each year containing the # of incidents and (offense occurrences) involving the given offense
+Given a specific offense and a classification criteria for the offenders, returns for each year the number of offenders (who committed said offense) that fall into each category of the classification criteria.<br>
+This method encompasses agency-wide data.<br>
+Additional information can be found under method getVictimsByNation<br>
 
-### getCrimeCountByORI
+### Parameters
 
-Given a specific offense, returns for each year the number of incidents and (offense occurrences) that occurred involving that offense.
-This method encompasses agency-wide data.
-Additional information can be found under method getCrimeCountByNation
+-   `ori` **[String][76]** The ORI of the agency in question
+-   `offense` **[String][76]** The offense for which to find offenders.
+-   `classification` **[String][76]** The classification criteria by which the offenders will be categorized.
 
-#### Parameters
+Returns **[Object][79]** Entries for each year containing the # of (agency-wide offenders who committed the given offense) in each category type.
 
--   `ori` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The ORI of the agency in question
--   `offense` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The offense for which to find offenders.
+## getCrimeCountByNation
 
-Returns **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** Entries for each year containing the # of incidents and (offense occurrences) involving the given offense
+Given a specific offense, returns for each year the number of incidents and (offense occurrences) that occurred involving that offense.<br>
+Note that the difference between an incident and an offense is that within an incident, a person could have committed multiple offenses.<br>
+This method encompasses nation-wide data.<br>
+Additional information can be found under method getVictimsByNation<br>
 
-### getCrimesByORI
+### Parameters
 
-Get detailed statistics about the offenses committed within the jurisdiction of a particular agency.
-If no one type of offense is specified, then this method returns statistics about all types of offenses.
+-   `offense` **[String][76]** The offense for which to find the # of incidents and occurrences.
 
-#### Parameters
+Returns **[Array][81]** Entries for each year containing the # of incidents and (offense occurrences) involving the given offense
 
--   `ori` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The ORI of the agency in question
--   `offense` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The offense for which to find statistics. If no offense is specified, then get statistics about all offenses. (optional, default `"offenses"`)
+## getCrimeCountByRegion
 
-Returns **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** Entries for each year containing detailed statistics about (each offense).
+Given a specific offense, returns for each year the number of incidents and (offense occurrences) that occurred involving that offense.<br>
+This method encompasses region-wide data.<br>
+Additional information can be found under method getCrimeCountByNation<br>
 
-### getDetailedArsonStatsByNation
+### Parameters
 
-For each year, gets detailed statistics about arson, including the # of reports and estimated property damage.
-This method encompasses nation-wide data.
+-   `regionName` **([Number][80] \| [String][76])** This region's numerical code. Note that this parameter can also be a String (the region's name).
+-   `offense` **[String][76]** The offense for which to find the # of incidents and occurrences.
 
-Returns **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** Entries for each year detailing arson statistics
+Returns **[Array][81]** Entries for each year containing the # of incidents and (offense occurrences) involving the given offense
 
-### getDetailedArsonStatsByRegion
+## getCrimeCountByState
 
-For each year, gets detailed statistics about arson, including the # of reports and estimated property damage.
-Note that this method separates its statistics into states, providing individual arson statistics for each state within the region.
-This method encompasses region-wide data.
+Given a specific offense, returns for each year the number of incidents and (offense occurrences) that occurred involving that offense.<br>
+This method encompasses state-wide data.<br>
+Additional information can be found under method getCrimeCountByNation<br>
 
-#### Parameters
+### Parameters
 
--   `regionName` **([Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number) \| [String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String))** This region's numerical code. Note that this parameter can also be a String (the region's name).
+-   `stateAbbreviation` **[String][76]** State Abbreviation, two characters long
+-   `offense` **[String][76]** The offense for which to find the # of incidents and occurrences.
 
-Returns **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** Entries for each year detailing arson statistics.
+Returns **[Array][81]** Entries for each year containing the # of incidents and (offense occurrences) involving the given offense
 
-### getDetailedArsonStatsByState
+## getCrimeCountByORI
 
-For each year, gets detailed statistics about arson, including the # of reports and estimated property damage.
-This method encompasses state-wide data.
+Given a specific offense, returns for each year the number of incidents and (offense occurrences) that occurred involving that offense.<br>
+This method encompasses agency-wide data.<br>
+Additional information can be found under method getCrimeCountByNation<br>
 
-#### Parameters
+### Parameters
 
--   `stateAbbreviation` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** State Abbreviation, two characters long
+-   `ori` **[String][76]** The ORI of the agency in question
+-   `offense` **[String][76]** The offense for which to find offenders.
 
-Returns **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** Entries for each year detailing arson statistics.
+Returns **[Array][81]** Entries for each year containing the # of incidents and (offense occurrences) involving the given offense
 
-### getParticipationByNation
+## getCrimesByORI
 
-For each year, returns the total number of agencies in the U.S in addition to what type of data they submit (SRS, NIBRS).
-SRS is the old hierarchical crime reporting system (Summary Reporting System) that only collects a limited range of data.
-NIBRS is the new system (National Incident-Based Reporting System) that allows for more extensive data collection (more crime categories).
+Get detailed statistics about the offenses committed within the jurisdiction of a particular agency.<br>
+If no one type of offense is specified, then this method returns statistics about all types of offenses.<br>
+If looking for (a) specific offense(s), note that it is much faster to use getCrimeByOri or getMultipleCrimesByORI.<br>
 
-Returns **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** Entries for each year detailing the number of agencies and how many collect what type of information
+### Parameters
 
-### getParticipationByRegion
+-   `ori` **[String][76]** The ORI of the agency in question
+-   `offense` **[String][76]** The offense for which to find statistics. If no offense is specified, then get statistics about all offenses. (optional, default `"offenses"`)
 
-For each year, returns the total number of agencies in the specified region in addition to what type of data they submit (SRS, NIBRS).
+Returns **([Object][79] \| [Array][81])** Entries for each year containing detailed statistics about (each offense). If looking up a specific offense, returns an object. Otherwise, returns an array.
 
-#### Parameters
+## getCrimeByORI
 
--   `regionName` **([Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number) \| [String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String))** This region's numerical code. Note that this parameter can also be a String (the region's name).
+Get detailed statistics about an offense committed within the jurisdiction of a particular agency.<br>
+Transmits more bandwidth, but is significantly faster (2.5x) than relying on the default API exposed by getCrimesByORI.<br>
 
-Returns **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** Entries for each year detailing the number of agencies and how many collect what type of information
+### Parameters
 
-### getParticipationByState
+-   `ori` **[String][76]** The ORI of the agency in question.
+-   `offense` **[String][76]** The offense for which to find statistics.
 
-For each year, returns the total number of agencies in the specified state in addition to what type of data they submit (SRS, NIBRS).
+Returns **[Array][81]** Entries for each year containing detailed statistics about the offense. Returns undefined if the ORI provided is not valid.
 
-#### Parameters
+## getMultipleCrimesByORI
 
--   `stateAbbreviation` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** State Abbreviation, two characters long
+Get detailed statistics about multiple offenses committed within the jurisdiction of a particular agency.<br>
+Transmits more bandwidth, but is significantly faster (2.5x) than relying on the default API exposed by getCrimesByORI.<br>
 
-Returns **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** Entries for each year detailing the number of agencies and how many collect what type of information
+### Parameters
 
-### getParticipationByORI
+-   `ori` **[String][76]** The ORI of the agency in question.
+-   `offenses` **[Array][81]** The offenses for which to find statistics.
 
-For each year, returns the type of data that this specific agency has been reporting, in addition to other relevant data about the agency.
+Returns **[Array][81]** Entries for each year containing detailed statistics about the offenses. Array of arrays, where an index into the returned array matches with that of the offenses array passsed in. Returns undefined if the ORI provided is not valid.
 
-#### Parameters
+## getDetailedArsonStatsByNation
 
--   `ori` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The ORI of the agency in question
+For each year, gets detailed statistics about arson, including the # of reports and estimated property damage.<br>
+This method encompasses nation-wide data.<br>
 
-Returns **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** Entries for each year detailing the number of agencies and how many collect what type of information
+Returns **[Array][81]** Entries for each year detailing arson statistics
 
-### getCrimeEstimatesByNation
+## getDetailedArsonStatsByRegion
 
-For each year, returns the estimated number of crimes (in different categories) that occurred.
-This method encompasses nation-wide data.
+For each year, gets detailed statistics about arson, including the # of reports and estimated property damage.<br>
+Note that this method separates its statistics into states, providing individual arson statistics for each state within the region.<br>
+This method encompasses region-wide data.<br>
 
-Returns **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** Entries for each year detailing the estimated number of crimes that occurred.
+### Parameters
 
-### getCrimeEstimatesByRegion
+-   `regionName` **([Number][80] \| [String][76])** This region's numerical code. Note that this parameter can also be a String (the region's name).
 
-For each year, returns the estimated number of crimes (in different categories) that occurred.
-Note that this method breaks down its statistics into states, providing estimates for each state within the region.
-This method encompasses region-wide data.
+Returns **[Array][81]** Entries for each year detailing arson statistics.
 
-#### Parameters
+## getDetailedArsonStatsByState
 
--   `regionName` **([Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number) \| [String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String))** This region's numerical code. Note that this parameter can also be a String (the region's name).
+For each year, gets detailed statistics about arson, including the # of reports and estimated property damage.<br>
+This method encompasses state-wide data.<br>
 
-Returns **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** Entries for each year detailing the estimated number of crimes that occurred.
+### Parameters
 
-### getCrimeEstimatesByState
+-   `stateAbbreviation` **[String][76]** State Abbreviation, two characters long
 
-For each year, returns the estimated number of crimes (in different categories) that occurred.
-This method encompasses state-wide data.
+Returns **[Array][81]** Entries for each year detailing arson statistics.
 
-#### Parameters
+## getParticipationByNation
 
--   `stateAbbreviation` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** State Abbreviation, two characters long
+For each year, returns the total number of agencies in the U.S in addition to what type of data they submit (SRS, NIBRS).<br>
+SRS is the old hierarchical crime reporting system (Summary Reporting System) that only collects a limited range of data.<br>
+NIBRS is the new system (National Incident-Based Reporting System) that allows for more extensive data collection (more crime categories).<br>
 
-Returns **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** Entries for each year detailing the estimated number of crimes that occurred.
+Returns **[Array][81]** Entries for each year detailing the number of agencies and how many collect what type of information
+
+## getParticipationByRegion
+
+For each year, returns the total number of agencies in the specified region in addition to what type of data they submit (SRS, NIBRS).<br>
+
+### Parameters
+
+-   `regionName` **([Number][80] \| [String][76])** This region's numerical code. Note that this parameter can also be a String (the region's name).
+
+Returns **[Array][81]** Entries for each year detailing the number of agencies and how many collect what type of information
+
+## getParticipationByState
+
+For each year, returns the total number of agencies in the specified state in addition to what type of data they submit (SRS, NIBRS).<br>
+
+### Parameters
+
+-   `stateAbbreviation` **[String][76]** State Abbreviation, two characters long
+
+Returns **[Array][81]** Entries for each year detailing the number of agencies and how many collect what type of information
+
+## getParticipationByORI
+
+For each year, returns the type of data that this specific agency has been reporting, in addition to other relevant data about the agency.<br>
+
+### Parameters
+
+-   `ori` **[String][76]** The ORI of the agency in question
+
+Returns **[Array][81]** Entries for each year detailing the number of agencies and how many collect what type of information
+
+## getCrimeEstimatesByNation
+
+For each year, returns the estimated number of crimes (in different categories) that occurred.<br>
+This method encompasses nation-wide data.<br>
+
+Returns **[Array][81]** Entries for each year detailing the estimated number of crimes that occurred.
+
+## getCrimeEstimatesByRegion
+
+For each year, returns the estimated number of crimes (in different categories) that occurred.<br>
+Note that this method breaks down its statistics into states, providing estimates for each state within the region.<br>
+This method encompasses region-wide data.<br>
+
+### Parameters
+
+-   `regionName` **([Number][80] \| [String][76])** This region's numerical code. Note that this parameter can also be a String (the region's name).
+
+Returns **[Array][81]** Entries for each year detailing the estimated number of crimes that occurred.
+
+## getCrimeEstimatesByState
+
+For each year, returns the estimated number of crimes (in different categories) that occurred.<br>
+This method encompasses state-wide data.<br>
+
+### Parameters
+
+-   `stateAbbreviation` **[String][76]** State Abbreviation, two characters long
+
+Returns **[Array][81]** Entries for each year detailing the estimated number of crimes that occurred.
+
+[1]: #constructor
+
+[2]: #parameters
+
+[3]: #getagencies
+
+[4]: #getagenciesbycoordinates
+
+[5]: #parameters-1
+
+[6]: #getagenciesbyregion
+
+[7]: #parameters-2
+
+[8]: #getagenciesbystate
+
+[9]: #parameters-3
+
+[10]: #getagencybyori
+
+[11]: #parameters-4
+
+[12]: #getstates
+
+[13]: #parameters-5
+
+[14]: #getallstates
+
+[15]: #getstatesbyregion
+
+[16]: #parameters-6
+
+[17]: #getstatebyabbreviation
+
+[18]: #parameters-7
+
+[19]: #getregions
+
+[20]: #getregionsbyname
+
+[21]: #parameters-8
+
+[22]: #getpolicebynation
+
+[23]: #getpolicebyregion
+
+[24]: #parameters-9
+
+[25]: #getpolicebystate
+
+[26]: #parameters-10
+
+[27]: #getpolicebyori
+
+[28]: #parameters-11
+
+[29]: #getvictimsbynation
+
+[30]: #parameters-12
+
+[31]: #getvictimsbyregion
+
+[32]: #parameters-13
+
+[33]: #getvictimsbystate
+
+[34]: #parameters-14
+
+[35]: #getvictimsbyori
+
+[36]: #parameters-15
+
+[37]: #getoffendersbynation
+
+[38]: #parameters-16
+
+[39]: #getoffendersbyregion
+
+[40]: #parameters-17
+
+[41]: #getoffendersbystate
+
+[42]: #parameters-18
+
+[43]: #getoffendersbyori
+
+[44]: #parameters-19
+
+[45]: #getcrimecountbynation
+
+[46]: #parameters-20
+
+[47]: #getcrimecountbyregion
+
+[48]: #parameters-21
+
+[49]: #getcrimecountbystate
+
+[50]: #parameters-22
+
+[51]: #getcrimecountbyori
+
+[52]: #parameters-23
+
+[53]: #getcrimesbyori
+
+[54]: #parameters-24
+
+[55]: #getcrimebyori
+
+[56]: #parameters-25
+
+[57]: #getmultiplecrimesbyori
+
+[58]: #parameters-26
+
+[59]: #getdetailedarsonstatsbynation
+
+[60]: #getdetailedarsonstatsbyregion
+
+[61]: #parameters-27
+
+[62]: #getdetailedarsonstatsbystate
+
+[63]: #parameters-28
+
+[64]: #getparticipationbynation
+
+[65]: #getparticipationbyregion
+
+[66]: #parameters-29
+
+[67]: #getparticipationbystate
+
+[68]: #parameters-30
+
+[69]: #getparticipationbyori
+
+[70]: #parameters-31
+
+[71]: #getcrimeestimatesbynation
+
+[72]: #getcrimeestimatesbyregion
+
+[73]: #parameters-32
+
+[74]: #getcrimeestimatesbystate
+
+[75]: #parameters-33
+
+[76]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+
+[77]: https://api.data.gov/signup/
+
+[78]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+
+[79]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+
+[80]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+
+[81]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
