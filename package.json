@@ -1,6 +1,6 @@
 {
   "name": "fbi-ucr-api",
-  "version": "1.1.0",
+  "version": "1.0.0",
   "description": "Minimalist Node.js wrapper for the FBI Uniform Crime Reporting API",
   "main": "src/FBI_Wrapper.js",
   "directories": {
@@ -21,7 +21,7 @@
     "Crime",
     "Reporting",
     "API",
-    "Data"
+    "Data",
     "NIBRS",
     "SRS",
     "Agency",
