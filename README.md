@@ -1,5 +1,7 @@
 # FBI (Uniform) Crime Data API Wrapper
 
+**No longer actively being maintained. Use at your own discretion.**
+
 Minimalist FBI Uniform Crime Data (UCR) API Wrapper.
 
 Fulfills most if not all of the functionality indicated by the [FBI Uniform Crime Data API found here](https://crime-data-explorer.fr.cloud.gov/api). Extends additional helpful functionality (optimized performance, additional queries, easier usage).
